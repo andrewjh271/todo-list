@@ -3137,14 +3137,127 @@ function toDate(argument) {
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "log": () => (/* binding */ log)
-/* harmony export */ });
-function log (data) {
-  console.log(`DOM: ${data}`);
+/* harmony import */ var _observer__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./observer */ "./src/observer.js");
+/* harmony import */ var _todo_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./todo.js */ "./src/todo.js");
+
+
+
+const projectList = document.querySelector('.project-list');
+
+const project = document.querySelector('.project');
+const projectTitle = project.querySelector('.project-title');
+const projectDescription = project.querySelector('.project-description');
+const newTodoButton = project.querySelector('.new-todo');
+const todoForm = project.querySelector('.new-todo-form');
+const cancelTodo = project.querySelector('.cancel-todo');
+const todoTable = project.querySelector('.todo-table');
+const todos = todoTable.querySelector('.todo-items');
+const headings = todoTable.querySelectorAll('th');
+
+projectList.addEventListener('click', showProject);
+
+newTodoButton.addEventListener('click', toggleTodoForm);
+todoForm.addEventListener('submit', addTodo);
+cancelTodo.addEventListener('click', toggleTodoForm);
+headings.forEach(heading => heading.addEventListener('click', sortDisplay));
+
+todos.addEventListener('click', toggleProgress);
+todos.addEventListener('click', deleteTodo);
+
+let currentProject;
+let sortParam;
+
+_observer__WEBPACK_IMPORTED_MODULE_0__.on('updateCurrentProject', updateCurrentProject);
+_observer__WEBPACK_IMPORTED_MODULE_0__.on('updateProjects', updateProjects);
+
+function updateProjects(projects) {
+  projectList.innerHTML = projects
+    .map(
+      (project, i) => `
+        <li data-index='${i}'>${project.title}</li>`
+    )
+    .join('');
 }
 
+function showProject(e) {
+  if(e) {
+    const index = e.target.dataset.index;
+    _observer__WEBPACK_IMPORTED_MODULE_0__.emit('assignCurrentProject', index);
+  }
+  // currentProject updated from updateCurrentProject event
+  project.classList.remove('hidden');
+  projectTitle.innerHTML = currentProject.title;
+  if (currentProject.description) projectDescription = currentProject.projectDescription;
+  todos.innerHTML = currentProject.todos
+    .sort((a, b) => (a[sortParam] < b[sortParam] ? -1 : 1))
+    .map(
+      (todo, i) => `
+      <tr>
+      <td>${todo.title}</td>
+      <td>${todo.dueDateFormatted}</td>
+      <td>${todo.priorityInWords}</td>
+      <td>
+        <button class='progress' data-index='${i}'>
+          ${
+            todo.isComplete
+              ? "<span class='material-icons'>task_alt</span>"
+              : "<span class='material-icons'>remove_circle_outline</span>"
+          }
+        </button>
+      </td>
+      <td><button class='delete' data-index='${i}'>Delete</button></td>
+      </tr>`
+    )
+    .join('');
+}
 
+function toggleTodoForm(e) {
+  e.preventDefault();
+  newTodoButton.classList.toggle('hidden');
+  todoForm.classList.toggle('hidden');
+}
+
+function updateCurrentProject(project) {
+  currentProject = project;
+}
+
+function sortDisplay(e) {
+  sortParam = e.target.dataset.name;
+  showProject();
+}
+
+function toggleProgress(e) {
+  if (!e.target.matches('.progress')) return;
+
+  const index = e.target.dataset.index;
+  currentProject.todos[index].toggleComplete();
+  showProject();
+  console.log('toggle!', e.target.dataset.index);
+}
+
+function deleteTodo(e) {
+  if (!e.target.matches('.delete')) return;
+
+  const index = e.target.dataset.index;
+  currentProject.removeTodo(index);
+  showProject();
+  console.log('delete!', e.target.dataset.index);
+}
+
+function addTodo(e) {
+  e.preventDefault();
+
+  const todo = new _todo_js__WEBPACK_IMPORTED_MODULE_1__.default({
+    title: this.querySelector('[name=title]').value,
+    description: this.querySelector('[name=description]').value,
+    dueDate: this.querySelector('[name=due-date]').value,
+    priority: this.querySelector('[name=priority]').value,
+  })
+  currentProject.addTodo(todo);
+  this.reset();
+  toggleTodoForm(e);
+  showProject();
+}
 
 /***/ }),
 
@@ -3225,26 +3338,29 @@ class Project {
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "add": () => (/* binding */ add),
-/* harmony export */   "remove": () => (/* binding */ remove),
-/* harmony export */   "log": () => (/* binding */ log)
+/* harmony export */   "remove": () => (/* binding */ remove)
 /* harmony export */ });
 /* harmony import */ var _observer_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./observer.js */ "./src/observer.js");
 
 
 const projects = [];
+let currentProject;
+
+_observer_js__WEBPACK_IMPORTED_MODULE_0__.on('assignCurrentProject', assignCurrentProject);
+
+function assignCurrentProject(index) {
+  currentProject = projects[index];
+  _observer_js__WEBPACK_IMPORTED_MODULE_0__.emit('updateCurrentProject', currentProject);
+}
 
 function add (project) {
   projects.push(project);
-  (0,_observer_js__WEBPACK_IMPORTED_MODULE_0__.emit)('updateProjects', projects);
+  _observer_js__WEBPACK_IMPORTED_MODULE_0__.emit('updateProjects', projects);
 }
 
 function remove (index) {
   projects.splice(index, 1);
-  (0,_observer_js__WEBPACK_IMPORTED_MODULE_0__.emit)('updateProjects', projects);
-}
-
-function log () {
-  console.table(projects);
+  _observer_js__WEBPACK_IMPORTED_MODULE_0__.emit('updateProjects', projects);
 }
 
 
@@ -3269,7 +3385,7 @@ class Todo {
     this.title = params.title;
     this.description = params.description;
     if (params.dueDate) this.dueDate = new Date(params.dueDate);
-    this.priority = params.priority;
+    this.priority = Number(params.priority);
     this.isComplete = false;
   }
 
@@ -3278,7 +3394,24 @@ class Todo {
   }
 
   get dueDateFormatted() {
-    return (0,date_fns__WEBPACK_IMPORTED_MODULE_0__.default)(this.dueDate, 'M/d/yy');
+    return this.dueDate ? (0,date_fns__WEBPACK_IMPORTED_MODULE_0__.default)(this.dueDate, 'M/d/yy') : '';
+  }
+
+  get dueDateSorted() {
+    return this.dueDate ? this.dueDate : Infinity;
+  }
+
+  get priorityInWords() {
+    switch(this.priority) {
+      case 3:
+        return 'low';
+        break;
+      case 2:
+        return 'medium';
+        break;
+      default:
+        return 'high'
+    }
   }
 }
 
@@ -3350,19 +3483,14 @@ var __webpack_exports__ = {};
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _project__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./project */ "./src/project.js");
 /* harmony import */ var _todo__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./todo */ "./src/todo.js");
-/* harmony import */ var date_fns__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! date-fns */ "./node_modules/date-fns/esm/add/index.js");
-/* harmony import */ var _observer__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./observer */ "./src/observer.js");
-/* harmony import */ var _DOMcontroller__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./DOMcontroller */ "./src/DOMcontroller.js");
-/* harmony import */ var _projectsManager__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./projectsManager */ "./src/projectsManager.js");
+/* harmony import */ var _DOMcontroller__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./DOMcontroller */ "./src/DOMcontroller.js");
+/* harmony import */ var _projectsManager__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./projectsManager */ "./src/projectsManager.js");
+/* harmony import */ var date_fns__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! date-fns */ "./node_modules/date-fns/esm/add/index.js");
 
 
 
 
 
-
-
-_observer__WEBPACK_IMPORTED_MODULE_2__.on('updateProjects', _DOMcontroller__WEBPACK_IMPORTED_MODULE_3__.log);
-_observer__WEBPACK_IMPORTED_MODULE_2__.on('updateProjects', _projectsManager__WEBPACK_IMPORTED_MODULE_4__.log);
 
 const defaultProject = (() => {
   const project = new _project__WEBPACK_IMPORTED_MODULE_0__.default('Welcome');
@@ -3370,27 +3498,28 @@ const defaultProject = (() => {
   const a = new _todo__WEBPACK_IMPORTED_MODULE_1__.default({
     title: 'Positive thinking',
     description: 'Consider all the great things you\'ll accomplish with this Todo App',
-    dueDate: (0,date_fns__WEBPACK_IMPORTED_MODULE_5__.default)(Date.now(), { days: 1 }),
-    priority: 'medium',
+    dueDate: (0,date_fns__WEBPACK_IMPORTED_MODULE_4__.default)(Date.now(), { days: 1 }),
+    priority: '1',
   });
 
   const b = new _todo__WEBPACK_IMPORTED_MODULE_1__.default({
     title: 'Positive action',
     description: 'Enjoy the feeling of accomplishment as you check off this Todo',
-    dueDate: (0,date_fns__WEBPACK_IMPORTED_MODULE_5__.default)(Date.now(), { days: 2 }),
-    priority: 'medium',
+    dueDate: (0,date_fns__WEBPACK_IMPORTED_MODULE_4__.default)(Date.now(), { days: 2 }),
+    priority: '2',
   });
 
   const c = new _todo__WEBPACK_IMPORTED_MODULE_1__.default({
     title: 'Positive presence',
     description: 'Remember that the real Todo is the journey',
-    dueDate: (0,date_fns__WEBPACK_IMPORTED_MODULE_5__.default)(Date.now(), { days: 3 }),
-    priority: 'medium',
+    dueDate: (0,date_fns__WEBPACK_IMPORTED_MODULE_4__.default)(Date.now(), { days: 3 }),
+    priority: '3',
   });
 
   [a, b, c].forEach((todo) => project.addTodo(todo));
-  _projectsManager__WEBPACK_IMPORTED_MODULE_4__.add(project);
+  _projectsManager__WEBPACK_IMPORTED_MODULE_3__.add(project);
 })();
+
 })();
 
 /******/ })()

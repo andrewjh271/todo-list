@@ -5,7 +5,7 @@ export default class Todo {
     this.title = params.title;
     this.description = params.description;
     if (params.dueDate) this.dueDate = new Date(params.dueDate);
-    this.priority = params.priority;
+    this.priority = Number(params.priority);
     this.isComplete = false;
   }
 
@@ -14,6 +14,23 @@ export default class Todo {
   }
 
   get dueDateFormatted() {
-    return format(this.dueDate, 'M/d/yy');
+    return this.dueDate ? format(this.dueDate, 'M/d/yy') : '';
+  }
+
+  get dueDateSorted() {
+    return this.dueDate ? this.dueDate : Infinity;
+  }
+
+  get priorityInWords() {
+    switch(this.priority) {
+      case 3:
+        return 'low';
+        break;
+      case 2:
+        return 'medium';
+        break;
+      default:
+        return 'high'
+    }
   }
 }

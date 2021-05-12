@@ -1,19 +1,23 @@
-import { emit } from './observer.js'
+import * as Observer from './observer.js'
 
 const projects = [];
+let currentProject;
+
+Observer.on('assignCurrentProject', assignCurrentProject);
+
+function assignCurrentProject(index) {
+  currentProject = projects[index];
+  Observer.emit('updateCurrentProject', currentProject);
+}
 
 function add (project) {
   projects.push(project);
-  emit('updateProjects', projects);
+  Observer.emit('updateProjects', projects);
 }
 
 function remove (index) {
   projects.splice(index, 1);
-  emit('updateProjects', projects);
+  Observer.emit('updateProjects', projects);
 }
 
-function log () {
-  console.table(projects);
-}
-
-export { add, remove, log }
+export { add, remove }

@@ -6,9 +6,48 @@
     <meta charset="utf-8">
     <title>Todo List</title>
     <link rel="stylesheet" href="stylesheets/style.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   </head>
 
   <body>
+    <h1>Todo App</h1>
+
+    <aside class='projects'>
+      <h3>Projects...</h3>
+      <ul class='project-list'></ul>
+    </aside>
+
+    <div class='project hidden'>
+      <h2 class='project-title'></h2>
+      <h4 class='project-description'></h4>
+      <button class='new-todo'>Create Todo</button>
+      <form class='new-todo-form hidden apple'>
+        <input type='text' name='title' placeholder='Title' required>
+        <input type='text' name='description' placeholder='Description'>
+        <input type='date' name='due-date' placeholder='Due Date'>
+        <select name='priority' required>
+          <option disabled selected value=''>Priority</option>
+          <option value='3'>Low</option>
+          <option value='2'>Medium</option>
+          <option value='1'>High</option>
+        </select>
+        <button class='cancel-todo'>Cancel</button>
+        <input type='submit' value='+ Add Todo'>
+      </form>
+      <table class='todo-table'>
+        <thead>
+          <tr>
+            <th data-name='title'>Title</th>
+            <th data-name='dueDateSorted'>Due Date</th>
+            <th data-name='priority'>Priority</th>
+            <th data-name='isComplete'>Complete?</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody class='todo-items'></tbody>
+      </table>
+    </div>
+
     <script src="main.js"></script>
   </body>
 </html>
