@@ -3138,7 +3138,9 @@ function toDate(argument) {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _observer__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./observer */ "./src/observer.js");
-/* harmony import */ var _todo_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./todo.js */ "./src/todo.js");
+/* harmony import */ var _todoDOMObject__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./todoDOMObject */ "./src/todoDOMObject.js");
+/* harmony import */ var _todo__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./todo */ "./src/todo.js");
+
 
 
 
@@ -3162,6 +3164,7 @@ cancelTodo.addEventListener('click', toggleTodoForm);
 headings.forEach(heading => heading.addEventListener('click', sortDisplay));
 
 todos.addEventListener('click', toggleProgress);
+todos.addEventListener('click', viewTodo);
 todos.addEventListener('click', deleteTodo);
 
 let currentProject;
@@ -3169,6 +3172,7 @@ let sortParam;
 
 _observer__WEBPACK_IMPORTED_MODULE_0__.on('updateCurrentProject', updateCurrentProject);
 _observer__WEBPACK_IMPORTED_MODULE_0__.on('updateProjects', updateProjects);
+_observer__WEBPACK_IMPORTED_MODULE_0__.on('updateProject', showProject);
 
 function updateProjects(projects) {
   projectList.innerHTML = projects
@@ -3184,10 +3188,11 @@ function showProject(e) {
     const index = e.target.dataset.index;
     _observer__WEBPACK_IMPORTED_MODULE_0__.emit('assignCurrentProject', index);
   }
+  if(!currentProject) return;
   // currentProject updated from updateCurrentProject event
   project.classList.remove('hidden');
-  projectTitle.innerHTML = currentProject.title;
-  if (currentProject.description) projectDescription = currentProject.projectDescription;
+  projectTitle.textContent = currentProject.title;
+  projectDescription.textContent = currentProject.description;
   todos.innerHTML = currentProject.todos
     .sort((a, b) => (a[sortParam] < b[sortParam] ? -1 : 1))
     .map(
@@ -3195,7 +3200,7 @@ function showProject(e) {
       <tr>
       <td>${todo.title}</td>
       <td>${todo.dueDateFormatted}</td>
-      <td>${todo.priorityInWords}</td>
+      <td>${todo.priority}</td>
       <td>
         <button class='progress' data-index='${i}'>
           ${
@@ -3205,6 +3210,7 @@ function showProject(e) {
           }
         </button>
       </td>
+      <td><button class='view' data-index='${i}'>View</button></td>
       <td><button class='delete' data-index='${i}'>Delete</button></td>
       </tr>`
     )
@@ -3231,8 +3237,13 @@ function toggleProgress(e) {
 
   const index = e.target.dataset.index;
   currentProject.todos[index].toggleComplete();
-  showProject();
-  console.log('toggle!', e.target.dataset.index);
+}
+
+function viewTodo(e) {
+  if (!e.target.matches('.view')) return;
+
+  const index = e.target.dataset.index;
+  _todoDOMObject__WEBPACK_IMPORTED_MODULE_1__.display(currentProject.todos[index]);
 }
 
 function deleteTodo(e) {
@@ -3240,23 +3251,20 @@ function deleteTodo(e) {
 
   const index = e.target.dataset.index;
   currentProject.removeTodo(index);
-  showProject();
-  console.log('delete!', e.target.dataset.index);
 }
 
 function addTodo(e) {
   e.preventDefault();
 
-  const todo = new _todo_js__WEBPACK_IMPORTED_MODULE_1__.default({
+  const todo = new _todo__WEBPACK_IMPORTED_MODULE_2__.default({
     title: this.querySelector('[name=title]').value,
     description: this.querySelector('[name=description]').value,
-    dueDate: this.querySelector('[name=due-date]').value,
+    dueDate: `${this.querySelector('[name=due-date]').value}T00:00:00`,
     priority: this.querySelector('[name=priority]').value,
   })
   currentProject.addTodo(todo);
   this.reset();
   toggleTodoForm(e);
-  showProject();
 }
 
 /***/ }),
@@ -3311,18 +3319,24 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ Project)
 /* harmony export */ });
+/* harmony import */ var _observer__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./observer */ "./src/observer.js");
+
+
 class Project {
-  constructor(title) {
-    this.title = title;
+  constructor(params) {
+    this.title = params.title;
+    this.description = params.description;
     this.todos = [];
   }
 
   addTodo(todo) {
     this.todos.push(todo);
+    _observer__WEBPACK_IMPORTED_MODULE_0__.emit('updateProject');
   }
 
   removeTodo(index) {
     this.todos.splice(index, 1);
+    _observer__WEBPACK_IMPORTED_MODULE_0__.emit('updateProject');
   }
 }
 
@@ -3377,7 +3391,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ Todo)
 /* harmony export */ });
-/* harmony import */ var date_fns__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! date-fns */ "./node_modules/date-fns/esm/format/index.js");
+/* harmony import */ var date_fns__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! date-fns */ "./node_modules/date-fns/esm/format/index.js");
+/* harmony import */ var _observer__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./observer */ "./src/observer.js");
+
 
 
 class Todo {
@@ -3385,36 +3401,136 @@ class Todo {
     this.title = params.title;
     this.description = params.description;
     if (params.dueDate) this.dueDate = new Date(params.dueDate);
-    this.priority = Number(params.priority);
+    this.priority = params.priority;
     this.isComplete = false;
   }
 
   toggleComplete() {
     this.isComplete = !this.isComplete;
+    _observer__WEBPACK_IMPORTED_MODULE_0__.emit('updateProject');
+  }
+
+  update(params) {
+    this.title = params.title;
+    this.description = params.description;
+    if (params.dueDate) this.dueDate = new Date(params.dueDate);
+    this.priority = params.priority;
+    this.isComplete = params.isComplete;
+
+    _observer__WEBPACK_IMPORTED_MODULE_0__.emit('updateProject');
   }
 
   get dueDateFormatted() {
-    return this.dueDate ? (0,date_fns__WEBPACK_IMPORTED_MODULE_0__.default)(this.dueDate, 'M/d/yy') : '';
+    return this.dueDate ? (0,date_fns__WEBPACK_IMPORTED_MODULE_1__.default)(this.dueDate, 'M/d/yy') : '';
   }
 
-  get dueDateSorted() {
+  get dueDateString() {
+    return this.dueDate ? (0,date_fns__WEBPACK_IMPORTED_MODULE_1__.default)(this.dueDate, 'yyyy-MM-dd') : '';
+  }
+
+  get sortedDueDate() {
     return this.dueDate ? this.dueDate : Infinity;
   }
 
-  get priorityInWords() {
+  get sortedPriority() {
     switch(this.priority) {
-      case 3:
-        return 'low';
+      case 'low':
+        return 3;
         break;
-      case 2:
-        return 'medium';
+      case 'medium':
+        return 2;
         break;
       default:
-        return 'high'
+        return 1;
     }
   }
 }
 
+
+/***/ }),
+
+/***/ "./src/todoDOMObject.js":
+/*!******************************!*\
+  !*** ./src/todoDOMObject.js ***!
+  \******************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "display": () => (/* binding */ display),
+/* harmony export */   "clear": () => (/* binding */ clear)
+/* harmony export */ });
+
+
+const form = document.querySelector('.view-todo');
+
+function display(todo) {
+  clear();
+
+  const title = document.createElement('input');
+  title.setAttribute('type', 'text');
+  title.setAttribute('value', todo.title);
+
+  const description = document.createElement('textarea');
+  description.placeholder = 'Description...'
+  description.value = todo.description;
+
+  const dueDate = document.createElement('input');
+  dueDate.setAttribute('type', 'date');
+  dueDate.value = todo.dueDateString;
+
+  const priority = document.createElement('select');
+  const option1 = document.createElement('option');
+  option1.value = 'low';
+  option1.text = 'low';
+  const option2 = document.createElement('option');
+  option2.value = 'medium';
+  option2.text = 'medium';
+  const option3 = document.createElement('option');
+  option3.value = 'high';
+  option3.text = 'high';
+  priority.add(option1);
+  priority.add(option2);
+  priority.add(option3);
+  priority.selectedIndex = ['low', 'medium', 'high'].findIndex(el => el === todo.priority);
+
+  const isComplete = document.createElement('input');
+  isComplete.setAttribute('type', 'checkbox');
+  isComplete.checked = todo.isComplete;
+
+  const exit = document.createElement('button');
+  exit.textContent = 'Exit';
+
+  const submit = document.createElement('input');
+  submit.setAttribute('type', 'submit');
+  submit.setAttribute('value', 'Submit');
+
+  form.appendChild(title);
+  form.appendChild(description);
+  form.appendChild(dueDate);
+  form.appendChild(priority);
+  form.appendChild(isComplete);
+  form.appendChild(exit);
+  form.appendChild(submit);
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    todo.update({
+      title: title.value,
+      description: description.value,
+      dueDate: `${dueDate.value}T00:00:00`,
+      priority: priority.value,
+      isComplete: isComplete.checked
+     });
+    clear();
+  })
+
+  exit.addEventListener('click', clear);
+}
+
+function clear() {
+  form.innerHTML = ''
+}
 
 /***/ })
 
@@ -3493,27 +3609,27 @@ __webpack_require__.r(__webpack_exports__);
 
 
 const defaultProject = (() => {
-  const project = new _project__WEBPACK_IMPORTED_MODULE_0__.default('Welcome');
+  const project = new _project__WEBPACK_IMPORTED_MODULE_0__.default({ title: 'Welcome', description: 'Enjoy your todos!'});
 
   const a = new _todo__WEBPACK_IMPORTED_MODULE_1__.default({
     title: 'Positive thinking',
     description: 'Consider all the great things you\'ll accomplish with this Todo App',
     dueDate: (0,date_fns__WEBPACK_IMPORTED_MODULE_4__.default)(Date.now(), { days: 1 }),
-    priority: '1',
+    priority: 'medium',
   });
 
   const b = new _todo__WEBPACK_IMPORTED_MODULE_1__.default({
     title: 'Positive action',
     description: 'Enjoy the feeling of accomplishment as you check off this Todo',
     dueDate: (0,date_fns__WEBPACK_IMPORTED_MODULE_4__.default)(Date.now(), { days: 2 }),
-    priority: '2',
+    priority: 'high',
   });
 
   const c = new _todo__WEBPACK_IMPORTED_MODULE_1__.default({
     title: 'Positive presence',
     description: 'Remember that the real Todo is the journey',
     dueDate: (0,date_fns__WEBPACK_IMPORTED_MODULE_4__.default)(Date.now(), { days: 3 }),
-    priority: '3',
+    priority: 'low',
   });
 
   [a, b, c].forEach((todo) => project.addTodo(todo));

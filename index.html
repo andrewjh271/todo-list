@@ -21,15 +21,15 @@
       <h2 class='project-title'></h2>
       <h4 class='project-description'></h4>
       <button class='new-todo'>Create Todo</button>
-      <form class='new-todo-form hidden apple'>
+      <form class='new-todo-form hidden'>
         <input type='text' name='title' placeholder='Title' required>
-        <input type='text' name='description' placeholder='Description'>
-        <input type='date' name='due-date' placeholder='Due Date'>
+        <textarea name='description' placeholder='Description'></textarea>
+        <input type='date' name='due-date'>
         <select name='priority' required>
           <option disabled selected value=''>Priority</option>
-          <option value='3'>Low</option>
-          <option value='2'>Medium</option>
-          <option value='1'>High</option>
+          <option value='low'>Low</option>
+          <option value='medium'>Medium</option>
+          <option value='high'>High</option>
         </select>
         <button class='cancel-todo'>Cancel</button>
         <input type='submit' value='+ Add Todo'>
@@ -38,14 +38,15 @@
         <thead>
           <tr>
             <th data-name='title'>Title</th>
-            <th data-name='dueDateSorted'>Due Date</th>
-            <th data-name='priority'>Priority</th>
+            <th data-name='sortedDueDate'>Due Date</th>
+            <th data-name='sortedPriority'>Priority</th>
             <th data-name='isComplete'>Complete?</th>
             <th></th>
           </tr>
         </thead>
         <tbody class='todo-items'></tbody>
       </table>
+      <form class='view-todo'></form>
     </div>
 
     <script src="main.js"></script>
