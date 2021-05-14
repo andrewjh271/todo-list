@@ -1,36 +1,52 @@
 import { format } from 'date-fns';
+import * as Observer from './observer';
 
 export default class Todo {
   constructor(params) {
     this.title = params.title;
     this.description = params.description;
     if (params.dueDate) this.dueDate = new Date(params.dueDate);
-    this.priority = Number(params.priority);
+    this.priority = params.priority;
     this.isComplete = false;
   }
 
   toggleComplete() {
     this.isComplete = !this.isComplete;
+    Observer.emit('updateProject');
+  }
+
+  update(params) {
+    this.title = params.title;
+    this.description = params.description;
+    if (params.dueDate) this.dueDate = new Date(params.dueDate);
+    this.priority = params.priority;
+    this.isComplete = params.isComplete;
+
+    Observer.emit('updateProject');
   }
 
   get dueDateFormatted() {
     return this.dueDate ? format(this.dueDate, 'M/d/yy') : '';
   }
 
-  get dueDateSorted() {
+  get dueDateString() {
+    return this.dueDate ? format(this.dueDate, 'yyyy-MM-dd') : '';
+  }
+
+  get sortedDueDate() {
     return this.dueDate ? this.dueDate : Infinity;
   }
 
-  get priorityInWords() {
+  get sortedPriority() {
     switch(this.priority) {
-      case 3:
-        return 'low';
+      case 'low':
+        return 3;
         break;
-      case 2:
-        return 'medium';
+      case 'medium':
+        return 2;
         break;
       default:
-        return 'high'
+        return 1;
     }
   }
 }

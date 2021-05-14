@@ -1,5 +1,6 @@
 import * as Observer from './observer';
-import Todo from './todo.js';
+import * as todoDOMObject from './todoDOMObject';
+import Todo from './todo';
 
 const projectList = document.querySelector('.project-list');
 
@@ -21,6 +22,7 @@ cancelTodo.addEventListener('click', toggleTodoForm);
 headings.forEach(heading => heading.addEventListener('click', sortDisplay));
 
 todos.addEventListener('click', toggleProgress);
+todos.addEventListener('click', viewTodo);
 todos.addEventListener('click', deleteTodo);
 
 let currentProject;
@@ -28,6 +30,7 @@ let sortParam;
 
 Observer.on('updateCurrentProject', updateCurrentProject);
 Observer.on('updateProjects', updateProjects);
+Observer.on('updateProject', showProject);
 
 function updateProjects(projects) {
   projectList.innerHTML = projects
@@ -43,10 +46,11 @@ function showProject(e) {
     const index = e.target.dataset.index;
     Observer.emit('assignCurrentProject', index);
   }
+  if(!currentProject) return;
   // currentProject updated from updateCurrentProject event
   project.classList.remove('hidden');
-  projectTitle.innerHTML = currentProject.title;
-  if (currentProject.description) projectDescription = currentProject.projectDescription;
+  projectTitle.textContent = currentProject.title;
+  projectDescription.textContent = currentProject.description;
   todos.innerHTML = currentProject.todos
     .sort((a, b) => (a[sortParam] < b[sortParam] ? -1 : 1))
     .map(
@@ -54,7 +58,7 @@ function showProject(e) {
       <tr>
       <td>${todo.title}</td>
       <td>${todo.dueDateFormatted}</td>
-      <td>${todo.priorityInWords}</td>
+      <td>${todo.priority}</td>
       <td>
         <button class='progress' data-index='${i}'>
           ${
@@ -64,6 +68,7 @@ function showProject(e) {
           }
         </button>
       </td>
+      <td><button class='view' data-index='${i}'>View</button></td>
       <td><button class='delete' data-index='${i}'>Delete</button></td>
       </tr>`
     )
@@ -90,8 +95,13 @@ function toggleProgress(e) {
 
   const index = e.target.dataset.index;
   currentProject.todos[index].toggleComplete();
-  showProject();
-  console.log('toggle!', e.target.dataset.index);
+}
+
+function viewTodo(e) {
+  if (!e.target.matches('.view')) return;
+
+  const index = e.target.dataset.index;
+  todoDOMObject.display(currentProject.todos[index]);
 }
 
 function deleteTodo(e) {
@@ -99,8 +109,6 @@ function deleteTodo(e) {
 
   const index = e.target.dataset.index;
   currentProject.removeTodo(index);
-  showProject();
-  console.log('delete!', e.target.dataset.index);
 }
 
 function addTodo(e) {
@@ -109,11 +117,10 @@ function addTodo(e) {
   const todo = new Todo({
     title: this.querySelector('[name=title]').value,
     description: this.querySelector('[name=description]').value,
-    dueDate: this.querySelector('[name=due-date]').value,
+    dueDate: `${this.querySelector('[name=due-date]').value}T00:00:00`,
     priority: this.querySelector('[name=priority]').value,
   })
   currentProject.addTodo(todo);
   this.reset();
   toggleTodoForm(e);
-  showProject();
 }
