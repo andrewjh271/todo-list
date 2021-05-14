@@ -3139,7 +3139,11 @@ function toDate(argument) {
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _observer__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./observer */ "./src/observer.js");
 /* harmony import */ var _todoDOMObject__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./todoDOMObject */ "./src/todoDOMObject.js");
-/* harmony import */ var _todo__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./todo */ "./src/todo.js");
+/* harmony import */ var _projectForm__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./projectForm */ "./src/projectForm.js");
+/* harmony import */ var _projectsManager__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./projectsManager */ "./src/projectsManager.js");
+/* harmony import */ var _todo__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./todo */ "./src/todo.js");
+
+
 
 
 
@@ -3167,10 +3171,8 @@ todos.addEventListener('click', toggleProgress);
 todos.addEventListener('click', viewTodo);
 todos.addEventListener('click', deleteTodo);
 
-let currentProject;
 let sortParam;
 
-_observer__WEBPACK_IMPORTED_MODULE_0__.on('updateCurrentProject', updateCurrentProject);
 _observer__WEBPACK_IMPORTED_MODULE_0__.on('updateProjects', updateProjects);
 _observer__WEBPACK_IMPORTED_MODULE_0__.on('updateProject', showProject);
 
@@ -3188,13 +3190,11 @@ function showProject(e) {
     const index = e.target.dataset.index;
     _observer__WEBPACK_IMPORTED_MODULE_0__.emit('assignCurrentProject', index);
   }
-  if(!currentProject) return;
-  // currentProject updated from updateCurrentProject event
+  if(!_projectsManager__WEBPACK_IMPORTED_MODULE_3__.currentProject) return;
   project.classList.remove('hidden');
-  projectTitle.textContent = currentProject.title;
-  projectDescription.textContent = currentProject.description;
-  todos.innerHTML = currentProject.todos
-    .sort((a, b) => (a[sortParam] < b[sortParam] ? -1 : 1))
+  projectTitle.textContent = _projectsManager__WEBPACK_IMPORTED_MODULE_3__.currentProject.title;
+  projectDescription.textContent = _projectsManager__WEBPACK_IMPORTED_MODULE_3__.currentProject.description;
+  todos.innerHTML = _projectsManager__WEBPACK_IMPORTED_MODULE_3__.currentProject.todos.sort((a, b) => (a[sortParam] < b[sortParam] ? -1 : 1))
     .map(
       (todo, i) => `
       <tr>
@@ -3223,10 +3223,6 @@ function toggleTodoForm(e) {
   todoForm.classList.toggle('hidden');
 }
 
-function updateCurrentProject(project) {
-  currentProject = project;
-}
-
 function sortDisplay(e) {
   sortParam = e.target.dataset.name;
   showProject();
@@ -3236,33 +3232,33 @@ function toggleProgress(e) {
   if (!e.target.matches('.progress')) return;
 
   const index = e.target.dataset.index;
-  currentProject.todos[index].toggleComplete();
+  _projectsManager__WEBPACK_IMPORTED_MODULE_3__.currentProject.todos[index].toggleComplete();
 }
 
 function viewTodo(e) {
   if (!e.target.matches('.view')) return;
 
   const index = e.target.dataset.index;
-  _todoDOMObject__WEBPACK_IMPORTED_MODULE_1__.display(currentProject.todos[index]);
+  _todoDOMObject__WEBPACK_IMPORTED_MODULE_1__.display(_projectsManager__WEBPACK_IMPORTED_MODULE_3__.currentProject.todos[index]);
 }
 
 function deleteTodo(e) {
   if (!e.target.matches('.delete')) return;
 
   const index = e.target.dataset.index;
-  currentProject.removeTodo(index);
+  _projectsManager__WEBPACK_IMPORTED_MODULE_3__.currentProject.removeTodo(index);
 }
 
 function addTodo(e) {
   e.preventDefault();
 
-  const todo = new _todo__WEBPACK_IMPORTED_MODULE_2__.default({
+  const todo = new _todo__WEBPACK_IMPORTED_MODULE_4__.default({
     title: this.querySelector('[name=title]').value,
     description: this.querySelector('[name=description]').value,
     dueDate: `${this.querySelector('[name=due-date]').value}T00:00:00`,
     priority: this.querySelector('[name=priority]').value,
   })
-  currentProject.addTodo(todo);
+  _projectsManager__WEBPACK_IMPORTED_MODULE_3__.currentProject.addTodo(todo);
   this.reset();
   toggleTodoForm(e);
 }
@@ -3338,8 +3334,95 @@ class Project {
     this.todos.splice(index, 1);
     _observer__WEBPACK_IMPORTED_MODULE_0__.emit('updateProject');
   }
+
+  update(params) {
+    this.title = params.title;
+    this.description = params.description;
+    _observer__WEBPACK_IMPORTED_MODULE_0__.emit('updateProject');
+  }
 }
 
+
+/***/ }),
+
+/***/ "./src/projectForm.js":
+/*!****************************!*\
+  !*** ./src/projectForm.js ***!
+  \****************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _project__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./project */ "./src/project.js");
+/* harmony import */ var _projectsManager__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./projectsManager */ "./src/projectsManager.js");
+
+
+
+const newProjectButton = document.querySelector('.add-project');
+const editProjectButton = document.querySelector('.edit-project-button');
+
+newProjectButton.addEventListener('click', display);
+editProjectButton.addEventListener('click', editProject);
+
+const form = document.querySelector('.project-form');
+const cancel = form.querySelector('.cancel-project');
+
+form.addEventListener('submit', addProject)
+cancel.addEventListener('click', hide);
+
+function display() {
+  form.classList.remove('hidden');
+}
+
+function hide(e) {
+  e.preventDefault();
+  form.classList.add('hidden');
+}
+
+function addProject(e) {
+  e.preventDefault();
+  const project = new _project__WEBPACK_IMPORTED_MODULE_0__.default({
+    title: this.querySelector('[name=title]').value,
+    description: this.querySelector('[name=description]').value
+  });
+  (0,_projectsManager__WEBPACK_IMPORTED_MODULE_1__.add)(project);
+  this.reset();
+  hide(e);
+}
+
+function editProject() {
+  const editProject = document.querySelector('.edit-project-form')
+
+  const title = document.createElement('input');
+  title.setAttribute('type', 'text');
+  title.value = _projectsManager__WEBPACK_IMPORTED_MODULE_1__.currentProject.title;
+  
+  const description = document.createElement('textarea');
+  description.placeholder = 'Description...'
+  description.value = _projectsManager__WEBPACK_IMPORTED_MODULE_1__.currentProject.description;
+
+  const exit = document.createElement('button');
+  exit.textContent = 'Exit';
+
+  const submit = document.createElement('input');
+  submit.setAttribute('type', 'submit');
+  submit.setAttribute('value', 'Submit');
+
+  editProject.append(title);
+  editProject.append(description);
+  editProject.append(exit);
+  editProject.append(submit);
+
+  editProject.addEventListener('submit', (e) => {
+    e.preventDefault();
+    _projectsManager__WEBPACK_IMPORTED_MODULE_1__.currentProject.update({
+      title: title.value,
+      description: description.value
+    });
+    editProject.innerHTML = '';
+  })
+
+  exit.addEventListener('click', () => editProject.innerHTML = '');
+}
 
 /***/ }),
 
@@ -3352,7 +3435,8 @@ class Project {
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "add": () => (/* binding */ add),
-/* harmony export */   "remove": () => (/* binding */ remove)
+/* harmony export */   "remove": () => (/* binding */ remove),
+/* harmony export */   "currentProject": () => (/* binding */ currentProject)
 /* harmony export */ });
 /* harmony import */ var _observer_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./observer.js */ "./src/observer.js");
 
@@ -3364,7 +3448,6 @@ _observer_js__WEBPACK_IMPORTED_MODULE_0__.on('assignCurrentProject', assignCurre
 
 function assignCurrentProject(index) {
   currentProject = projects[index];
-  _observer_js__WEBPACK_IMPORTED_MODULE_0__.emit('updateCurrentProject', currentProject);
 }
 
 function add (project) {
@@ -3376,6 +3459,10 @@ function remove (index) {
   projects.splice(index, 1);
   _observer_js__WEBPACK_IMPORTED_MODULE_0__.emit('updateProjects', projects);
 }
+
+// function get (index) {
+//   return projects[index];
+// }
 
 
 
