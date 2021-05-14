@@ -16,4 +16,10 @@ export default class Project {
     this.todos.splice(index, 1);
     Observer.emit('updateProject');
   }
+
+  update(params) {
+    this.title = params.title;
+    this.description = params.description;
+    Observer.emit('updateProject');
+  }
 }

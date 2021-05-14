@@ -7,7 +7,6 @@ Observer.on('assignCurrentProject', assignCurrentProject);
 
 function assignCurrentProject(index) {
   currentProject = projects[index];
-  Observer.emit('updateCurrentProject', currentProject);
 }
 
 function add (project) {
@@ -20,4 +19,8 @@ function remove (index) {
   Observer.emit('updateProjects', projects);
 }
 
-export { add, remove }
+// function get (index) {
+//   return projects[index];
+// }
+
+export { add, remove, currentProject }

@@ -13,7 +13,14 @@
     <h1>Todo App</h1>
 
     <aside class='projects'>
-      <h3>Projects...</h3>
+      <h3>Projects</h3>
+      <button class='add-project'>Add +</button>
+      <form class='project-form hidden'>
+        <input type='text' name='title' placeholder='title' required>
+        <textarea name='description' placeholder='Description'></textarea>
+        <button class='cancel-project'>Cancel</button>
+        <input type='submit' value='+ Add Project'>
+      </form>
       <ul class='project-list'></ul>
     </aside>
 
@@ -21,6 +28,8 @@
       <h2 class='project-title'></h2>
       <h4 class='project-description'></h4>
       <button class='new-todo'>Create Todo</button>
+      <button class='edit-project-button'>Edit</button>
+      <form class='edit-project-form'></form>
       <form class='new-todo-form hidden'>
         <input type='text' name='title' placeholder='Title' required>
         <textarea name='description' placeholder='Description'></textarea>

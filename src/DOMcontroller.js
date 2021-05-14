@@ -1,5 +1,7 @@
 import * as Observer from './observer';
 import * as todoDOMObject from './todoDOMObject';
+import './projectForm';
+import { currentProject } from './projectsManager';
 import Todo from './todo';
 
 const projectList = document.querySelector('.project-list');
@@ -25,10 +27,8 @@ todos.addEventListener('click', toggleProgress);
 todos.addEventListener('click', viewTodo);
 todos.addEventListener('click', deleteTodo);
 
-let currentProject;
 let sortParam;
 
-Observer.on('updateCurrentProject', updateCurrentProject);
 Observer.on('updateProjects', updateProjects);
 Observer.on('updateProject', showProject);
 
@@ -47,7 +47,6 @@ function showProject(e) {
     Observer.emit('assignCurrentProject', index);
   }
   if(!currentProject) return;
-  // currentProject updated from updateCurrentProject event
   project.classList.remove('hidden');
   projectTitle.textContent = currentProject.title;
   projectDescription.textContent = currentProject.description;
@@ -79,10 +78,6 @@ function toggleTodoForm(e) {
   e.preventDefault();
   newTodoButton.classList.toggle('hidden');
   todoForm.classList.toggle('hidden');
-}
-
-function updateCurrentProject(project) {
-  currentProject = project;
 }
 
 function sortDisplay(e) {
