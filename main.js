@@ -3265,6 +3265,24 @@ function addTodo(e) {
 
 /***/ }),
 
+/***/ "./src/localStorage.js":
+/*!*****************************!*\
+  !*** ./src/localStorage.js ***!
+  \*****************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _observer__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./observer */ "./src/observer.js");
+
+
+(0,_observer__WEBPACK_IMPORTED_MODULE_0__.on)('updateProjects', update);
+
+function update(projects) {
+  localStorage.setItem('projects', JSON.stringify(projects));
+}
+
+/***/ }),
+
 /***/ "./src/observer.js":
 /*!*************************!*\
   !*** ./src/observer.js ***!
@@ -3322,7 +3340,7 @@ class Project {
   constructor(params) {
     this.title = params.title;
     this.description = params.description;
-    this.todos = [];
+    this.todos = params.todos ? params.todos : [];
   }
 
   addTodo(todo) {
@@ -3436,15 +3454,17 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "add": () => (/* binding */ add),
 /* harmony export */   "remove": () => (/* binding */ remove),
+/* harmony export */   "load": () => (/* binding */ load),
 /* harmony export */   "currentProject": () => (/* binding */ currentProject)
 /* harmony export */ });
 /* harmony import */ var _observer_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./observer.js */ "./src/observer.js");
 
 
-const projects = [];
+let projects = [];
 let currentProject;
 
 _observer_js__WEBPACK_IMPORTED_MODULE_0__.on('assignCurrentProject', assignCurrentProject);
+_observer_js__WEBPACK_IMPORTED_MODULE_0__.on('updateProject', update);
 
 function assignCurrentProject(index) {
   currentProject = projects[index];
@@ -3460,9 +3480,14 @@ function remove (index) {
   _observer_js__WEBPACK_IMPORTED_MODULE_0__.emit('updateProjects', projects);
 }
 
-// function get (index) {
-//   return projects[index];
-// }
+function load (data) {
+  projects = data;
+  _observer_js__WEBPACK_IMPORTED_MODULE_0__.emit('updateProjects', projects);
+}
+
+function update() {
+  _observer_js__WEBPACK_IMPORTED_MODULE_0__.emit('updateProjects', projects);
+}
 
 
 
@@ -3489,7 +3514,7 @@ class Todo {
     this.description = params.description;
     if (params.dueDate) this.dueDate = new Date(params.dueDate);
     this.priority = params.priority;
-    this.isComplete = false;
+    this.isComplete = params.isComplete;
   }
 
   toggleComplete() {
@@ -3687,41 +3712,55 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _project__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./project */ "./src/project.js");
 /* harmony import */ var _todo__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./todo */ "./src/todo.js");
 /* harmony import */ var _DOMcontroller__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./DOMcontroller */ "./src/DOMcontroller.js");
-/* harmony import */ var _projectsManager__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./projectsManager */ "./src/projectsManager.js");
-/* harmony import */ var date_fns__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! date-fns */ "./node_modules/date-fns/esm/add/index.js");
+/* harmony import */ var _localStorage__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./localStorage */ "./src/localStorage.js");
+/* harmony import */ var _projectsManager__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./projectsManager */ "./src/projectsManager.js");
+/* harmony import */ var date_fns__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! date-fns */ "./node_modules/date-fns/esm/add/index.js");
 
 
 
 
 
 
-const defaultProject = (() => {
+
+const storedProjects = localStorage.getItem('projects');
+if (storedProjects) {
+  const projects = JSON.parse(storedProjects).map((project) => {
+    project.todos = project.todos.map((todo) => new _todo__WEBPACK_IMPORTED_MODULE_1__.default(todo));
+    return new _project__WEBPACK_IMPORTED_MODULE_0__.default(project);
+  });
+  _projectsManager__WEBPACK_IMPORTED_MODULE_4__.load(projects);
+} else {
+  _projectsManager__WEBPACK_IMPORTED_MODULE_4__.add(defaultProject());
+}
+
+function defaultProject() {
   const project = new _project__WEBPACK_IMPORTED_MODULE_0__.default({ title: 'Welcome', description: 'Enjoy your todos!'});
 
   const a = new _todo__WEBPACK_IMPORTED_MODULE_1__.default({
     title: 'Positive thinking',
     description: 'Consider all the great things you\'ll accomplish with this Todo App',
-    dueDate: (0,date_fns__WEBPACK_IMPORTED_MODULE_4__.default)(Date.now(), { days: 1 }),
+    dueDate: (0,date_fns__WEBPACK_IMPORTED_MODULE_5__.default)(Date.now(), { days: 1 }),
     priority: 'medium',
   });
+  a.toggleComplete();
 
   const b = new _todo__WEBPACK_IMPORTED_MODULE_1__.default({
     title: 'Positive action',
     description: 'Enjoy the feeling of accomplishment as you check off this Todo',
-    dueDate: (0,date_fns__WEBPACK_IMPORTED_MODULE_4__.default)(Date.now(), { days: 2 }),
+    dueDate: (0,date_fns__WEBPACK_IMPORTED_MODULE_5__.default)(Date.now(), { days: 2 }),
     priority: 'high',
   });
 
   const c = new _todo__WEBPACK_IMPORTED_MODULE_1__.default({
     title: 'Positive presence',
     description: 'Remember that the real Todo is the journey',
-    dueDate: (0,date_fns__WEBPACK_IMPORTED_MODULE_4__.default)(Date.now(), { days: 3 }),
+    dueDate: (0,date_fns__WEBPACK_IMPORTED_MODULE_5__.default)(Date.now(), { days: 3 }),
     priority: 'low',
   });
 
   [a, b, c].forEach((todo) => project.addTodo(todo));
-  _projectsManager__WEBPACK_IMPORTED_MODULE_3__.add(project);
-})();
+  return project;
+}
 
 })();
 
