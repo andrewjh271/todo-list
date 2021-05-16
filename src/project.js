@@ -4,7 +4,7 @@ export default class Project {
   constructor(params) {
     this.title = params.title;
     this.description = params.description;
-    this.todos = [];
+    this.todos = params.todos ? params.todos : [];
   }
 
   addTodo(todo) {

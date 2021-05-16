@@ -1,9 +1,10 @@
 import * as Observer from './observer.js'
 
-const projects = [];
+let projects = [];
 let currentProject;
 
 Observer.on('assignCurrentProject', assignCurrentProject);
+Observer.on('updateProject', update);
 
 function assignCurrentProject(index) {
   currentProject = projects[index];
@@ -19,8 +20,13 @@ function remove (index) {
   Observer.emit('updateProjects', projects);
 }
 
-// function get (index) {
-//   return projects[index];
-// }
+function load (data) {
+  projects = data;
+  Observer.emit('updateProjects', projects);
+}
 
-export { add, remove, currentProject }
+function update() {
+  Observer.emit('updateProjects', projects);
+}
+
+export { add, remove, load, currentProject }

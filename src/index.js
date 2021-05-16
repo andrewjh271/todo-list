@@ -1,10 +1,22 @@
 import Project from './project';
 import Todo from './todo';
 import './DOMcontroller';
+import './localStorage';
 import * as ProjectsManager from './projectsManager';
 import { add } from 'date-fns';
 
-const defaultProject = (() => {
+const storedProjects = localStorage.getItem('projects');
+if (storedProjects) {
+  const projects = JSON.parse(storedProjects).map((project) => {
+    project.todos = project.todos.map((todo) => new Todo(todo));
+    return new Project(project);
+  });
+  ProjectsManager.load(projects);
+} else {
+  ProjectsManager.add(defaultProject());
+}
+
+function defaultProject() {
   const project = new Project({ title: 'Welcome', description: 'Enjoy your todos!'});
 
   const a = new Todo({
@@ -13,6 +25,7 @@ const defaultProject = (() => {
     dueDate: add(Date.now(), { days: 1 }),
     priority: 'medium',
   });
+  a.toggleComplete();
 
   const b = new Todo({
     title: 'Positive action',
@@ -29,5 +42,5 @@ const defaultProject = (() => {
   });
 
   [a, b, c].forEach((todo) => project.addTodo(todo));
-  ProjectsManager.add(project);
-})();
+  return project;
+}

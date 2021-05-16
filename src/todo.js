@@ -7,7 +7,7 @@ export default class Todo {
     this.description = params.description;
     if (params.dueDate) this.dueDate = new Date(params.dueDate);
     this.priority = params.priority;
-    this.isComplete = false;
+    this.isComplete = params.isComplete;
   }
 
   toggleComplete() {

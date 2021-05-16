@@ -1,4 +1,4 @@
-import Project from "./project";
+import Project from './project';
 import { add, currentProject } from './projectsManager';
 
 const newProjectButton = document.querySelector('.add-project');
