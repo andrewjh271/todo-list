@@ -1,26 +1,20 @@
 import * as Observer from './observer';
-import * as todoDOMObject from './todoDOMObject';
-import './projectForm';
+import showTodo from './showTodo';
 import { currentProject } from './projectsManager';
-import Todo from './todo';
+import './projectForm';
+import './newTodo.js';
 
 const projectList = document.querySelector('.project-list');
 
 const project = document.querySelector('.project');
 const projectTitle = project.querySelector('.project-title');
 const projectDescription = project.querySelector('.project-description');
-const newTodoButton = project.querySelector('.new-todo');
-const todoForm = project.querySelector('.new-todo-form');
-const cancelTodo = project.querySelector('.cancel-todo');
+
 const todoTable = project.querySelector('.todo-table');
 const todos = todoTable.querySelector('.todo-items');
 const headings = todoTable.querySelectorAll('th');
 
 projectList.addEventListener('click', showProject);
-
-newTodoButton.addEventListener('click', toggleTodoForm);
-todoForm.addEventListener('submit', addTodo);
-cancelTodo.addEventListener('click', toggleTodoForm);
 headings.forEach(heading => heading.addEventListener('click', sortDisplay));
 
 todos.addEventListener('click', toggleProgress);
@@ -74,12 +68,6 @@ function showProject(e) {
     .join('');
 }
 
-function toggleTodoForm(e) {
-  e.preventDefault();
-  newTodoButton.classList.toggle('hidden');
-  todoForm.classList.toggle('hidden');
-}
-
 function sortDisplay(e) {
   sortParam = e.target.dataset.name;
   showProject();
@@ -96,7 +84,7 @@ function viewTodo(e) {
   if (!e.target.matches('.view')) return;
 
   const index = e.target.dataset.index;
-  todoDOMObject.display(currentProject.todos[index]);
+  showTodo(currentProject.todos[index]);
 }
 
 function deleteTodo(e) {
@@ -104,18 +92,4 @@ function deleteTodo(e) {
 
   const index = e.target.dataset.index;
   currentProject.removeTodo(index);
-}
-
-function addTodo(e) {
-  e.preventDefault();
-
-  const todo = new Todo({
-    title: this.querySelector('[name=title]').value,
-    description: this.querySelector('[name=description]').value,
-    dueDate: `${this.querySelector('[name=due-date]').value}T00:00:00`,
-    priority: this.querySelector('[name=priority]').value,
-  })
-  currentProject.addTodo(todo);
-  this.reset();
-  toggleTodoForm(e);
 }

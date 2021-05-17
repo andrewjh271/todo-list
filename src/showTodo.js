@@ -1,8 +1,6 @@
-export { display, clear}
-
 const form = document.querySelector('.view-todo');
 
-function display(todo) {
+export default function display(todo) {
   clear();
 
   const title = document.createElement('input');

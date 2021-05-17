@@ -3138,10 +3138,10 @@ function toDate(argument) {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _observer__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./observer */ "./src/observer.js");
-/* harmony import */ var _todoDOMObject__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./todoDOMObject */ "./src/todoDOMObject.js");
-/* harmony import */ var _projectForm__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./projectForm */ "./src/projectForm.js");
-/* harmony import */ var _projectsManager__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./projectsManager */ "./src/projectsManager.js");
-/* harmony import */ var _todo__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./todo */ "./src/todo.js");
+/* harmony import */ var _showTodo__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./showTodo */ "./src/showTodo.js");
+/* harmony import */ var _projectsManager__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./projectsManager */ "./src/projectsManager.js");
+/* harmony import */ var _projectForm__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./projectForm */ "./src/projectForm.js");
+/* harmony import */ var _newTodo_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./newTodo.js */ "./src/newTodo.js");
 
 
 
@@ -3153,18 +3153,12 @@ const projectList = document.querySelector('.project-list');
 const project = document.querySelector('.project');
 const projectTitle = project.querySelector('.project-title');
 const projectDescription = project.querySelector('.project-description');
-const newTodoButton = project.querySelector('.new-todo');
-const todoForm = project.querySelector('.new-todo-form');
-const cancelTodo = project.querySelector('.cancel-todo');
+
 const todoTable = project.querySelector('.todo-table');
 const todos = todoTable.querySelector('.todo-items');
 const headings = todoTable.querySelectorAll('th');
 
 projectList.addEventListener('click', showProject);
-
-newTodoButton.addEventListener('click', toggleTodoForm);
-todoForm.addEventListener('submit', addTodo);
-cancelTodo.addEventListener('click', toggleTodoForm);
 headings.forEach(heading => heading.addEventListener('click', sortDisplay));
 
 todos.addEventListener('click', toggleProgress);
@@ -3190,11 +3184,11 @@ function showProject(e) {
     const index = e.target.dataset.index;
     _observer__WEBPACK_IMPORTED_MODULE_0__.emit('assignCurrentProject', index);
   }
-  if(!_projectsManager__WEBPACK_IMPORTED_MODULE_3__.currentProject) return;
+  if(!_projectsManager__WEBPACK_IMPORTED_MODULE_2__.currentProject) return;
   project.classList.remove('hidden');
-  projectTitle.textContent = _projectsManager__WEBPACK_IMPORTED_MODULE_3__.currentProject.title;
-  projectDescription.textContent = _projectsManager__WEBPACK_IMPORTED_MODULE_3__.currentProject.description;
-  todos.innerHTML = _projectsManager__WEBPACK_IMPORTED_MODULE_3__.currentProject.todos.sort((a, b) => (a[sortParam] < b[sortParam] ? -1 : 1))
+  projectTitle.textContent = _projectsManager__WEBPACK_IMPORTED_MODULE_2__.currentProject.title;
+  projectDescription.textContent = _projectsManager__WEBPACK_IMPORTED_MODULE_2__.currentProject.description;
+  todos.innerHTML = _projectsManager__WEBPACK_IMPORTED_MODULE_2__.currentProject.todos.sort((a, b) => (a[sortParam] < b[sortParam] ? -1 : 1))
     .map(
       (todo, i) => `
       <tr>
@@ -3217,12 +3211,6 @@ function showProject(e) {
     .join('');
 }
 
-function toggleTodoForm(e) {
-  e.preventDefault();
-  newTodoButton.classList.toggle('hidden');
-  todoForm.classList.toggle('hidden');
-}
-
 function sortDisplay(e) {
   sortParam = e.target.dataset.name;
   showProject();
@@ -3232,36 +3220,23 @@ function toggleProgress(e) {
   if (!e.target.matches('.progress')) return;
 
   const index = e.target.dataset.index;
-  _projectsManager__WEBPACK_IMPORTED_MODULE_3__.currentProject.todos[index].toggleComplete();
+  _projectsManager__WEBPACK_IMPORTED_MODULE_2__.currentProject.todos[index].toggleComplete();
 }
 
 function viewTodo(e) {
   if (!e.target.matches('.view')) return;
 
   const index = e.target.dataset.index;
-  _todoDOMObject__WEBPACK_IMPORTED_MODULE_1__.display(_projectsManager__WEBPACK_IMPORTED_MODULE_3__.currentProject.todos[index]);
+  (0,_showTodo__WEBPACK_IMPORTED_MODULE_1__.default)(_projectsManager__WEBPACK_IMPORTED_MODULE_2__.currentProject.todos[index]);
 }
 
 function deleteTodo(e) {
   if (!e.target.matches('.delete')) return;
 
   const index = e.target.dataset.index;
-  _projectsManager__WEBPACK_IMPORTED_MODULE_3__.currentProject.removeTodo(index);
+  _projectsManager__WEBPACK_IMPORTED_MODULE_2__.currentProject.removeTodo(index);
 }
 
-function addTodo(e) {
-  e.preventDefault();
-
-  const todo = new _todo__WEBPACK_IMPORTED_MODULE_4__.default({
-    title: this.querySelector('[name=title]').value,
-    description: this.querySelector('[name=description]').value,
-    dueDate: `${this.querySelector('[name=due-date]').value}T00:00:00`,
-    priority: this.querySelector('[name=priority]').value,
-  })
-  _projectsManager__WEBPACK_IMPORTED_MODULE_3__.currentProject.addTodo(todo);
-  this.reset();
-  toggleTodoForm(e);
-}
 
 /***/ }),
 
@@ -3279,6 +3254,48 @@ __webpack_require__.r(__webpack_exports__);
 
 function update(projects) {
   localStorage.setItem('projects', JSON.stringify(projects));
+}
+
+/***/ }),
+
+/***/ "./src/newTodo.js":
+/*!************************!*\
+  !*** ./src/newTodo.js ***!
+  \************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _todo__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./todo */ "./src/todo.js");
+/* harmony import */ var _projectsManager__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./projectsManager */ "./src/projectsManager.js");
+
+
+
+const newTodoButton = document.querySelector('.new-todo');
+const todoForm = document.querySelector('.new-todo-form');
+const cancelTodo = document.querySelector('.cancel-todo');
+
+newTodoButton.addEventListener('click', toggleTodoForm);
+todoForm.addEventListener('submit', addTodo);
+cancelTodo.addEventListener('click', toggleTodoForm);
+
+function toggleTodoForm(e) {
+  e.preventDefault();
+  newTodoButton.classList.toggle('hidden');
+  todoForm.classList.toggle('hidden');
+}
+
+function addTodo(e) {
+  e.preventDefault();
+
+  const todo = new _todo__WEBPACK_IMPORTED_MODULE_0__.default({
+    title: this.querySelector('[name=title]').value,
+    description: this.querySelector('[name=description]').value,
+    dueDate: `${this.querySelector('[name=due-date]').value}T00:00:00`,
+    priority: this.querySelector('[name=priority]').value,
+  })
+  _projectsManager__WEBPACK_IMPORTED_MODULE_1__.currentProject.addTodo(todo);
+  this.reset();
+  toggleTodoForm(e);
 }
 
 /***/ }),
@@ -3493,87 +3510,16 @@ function update() {
 
 /***/ }),
 
-/***/ "./src/todo.js":
-/*!*********************!*\
-  !*** ./src/todo.js ***!
-  \*********************/
+/***/ "./src/showTodo.js":
+/*!*************************!*\
+  !*** ./src/showTodo.js ***!
+  \*************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (/* binding */ Todo)
+/* harmony export */   "default": () => (/* binding */ display)
 /* harmony export */ });
-/* harmony import */ var date_fns__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! date-fns */ "./node_modules/date-fns/esm/format/index.js");
-/* harmony import */ var _observer__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./observer */ "./src/observer.js");
-
-
-
-class Todo {
-  constructor(params) {
-    this.title = params.title;
-    this.description = params.description;
-    if (params.dueDate) this.dueDate = new Date(params.dueDate);
-    this.priority = params.priority;
-    this.isComplete = params.isComplete;
-  }
-
-  toggleComplete() {
-    this.isComplete = !this.isComplete;
-    _observer__WEBPACK_IMPORTED_MODULE_0__.emit('updateProject');
-  }
-
-  update(params) {
-    this.title = params.title;
-    this.description = params.description;
-    if (params.dueDate) this.dueDate = new Date(params.dueDate);
-    this.priority = params.priority;
-    this.isComplete = params.isComplete;
-
-    _observer__WEBPACK_IMPORTED_MODULE_0__.emit('updateProject');
-  }
-
-  get dueDateFormatted() {
-    return this.dueDate ? (0,date_fns__WEBPACK_IMPORTED_MODULE_1__.default)(this.dueDate, 'M/d/yy') : '';
-  }
-
-  get dueDateString() {
-    return this.dueDate ? (0,date_fns__WEBPACK_IMPORTED_MODULE_1__.default)(this.dueDate, 'yyyy-MM-dd') : '';
-  }
-
-  get sortedDueDate() {
-    return this.dueDate ? this.dueDate : Infinity;
-  }
-
-  get sortedPriority() {
-    switch(this.priority) {
-      case 'low':
-        return 3;
-        break;
-      case 'medium':
-        return 2;
-        break;
-      default:
-        return 1;
-    }
-  }
-}
-
-
-/***/ }),
-
-/***/ "./src/todoDOMObject.js":
-/*!******************************!*\
-  !*** ./src/todoDOMObject.js ***!
-  \******************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "display": () => (/* binding */ display),
-/* harmony export */   "clear": () => (/* binding */ clear)
-/* harmony export */ });
-
-
 const form = document.querySelector('.view-todo');
 
 function display(todo) {
@@ -3643,6 +3589,73 @@ function display(todo) {
 function clear() {
   form.innerHTML = ''
 }
+
+/***/ }),
+
+/***/ "./src/todo.js":
+/*!*********************!*\
+  !*** ./src/todo.js ***!
+  \*********************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ Todo)
+/* harmony export */ });
+/* harmony import */ var date_fns__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! date-fns */ "./node_modules/date-fns/esm/format/index.js");
+/* harmony import */ var _observer__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./observer */ "./src/observer.js");
+
+
+
+class Todo {
+  constructor(params) {
+    this.title = params.title;
+    this.description = params.description;
+    if (params.dueDate) this.dueDate = new Date(params.dueDate);
+    this.priority = params.priority;
+    this.isComplete = params.isComplete;
+  }
+
+  toggleComplete() {
+    this.isComplete = !this.isComplete;
+    _observer__WEBPACK_IMPORTED_MODULE_0__.emit('updateProject');
+  }
+
+  update(params) {
+    this.title = params.title;
+    this.description = params.description;
+    if (params.dueDate) this.dueDate = new Date(params.dueDate);
+    this.priority = params.priority;
+    this.isComplete = params.isComplete;
+    _observer__WEBPACK_IMPORTED_MODULE_0__.emit('updateProject');
+  }
+
+  get dueDateFormatted() {
+    return this.dueDate ? (0,date_fns__WEBPACK_IMPORTED_MODULE_1__.default)(this.dueDate, 'M/d/yy') : '';
+  }
+
+  get dueDateString() {
+    return this.dueDate ? (0,date_fns__WEBPACK_IMPORTED_MODULE_1__.default)(this.dueDate, 'yyyy-MM-dd') : '';
+  }
+
+  get sortedDueDate() {
+    return this.dueDate ? this.dueDate : Infinity;
+  }
+
+  get sortedPriority() {
+    switch(this.priority) {
+      case 'low':
+        return 3;
+        break;
+      case 'medium':
+        return 2;
+        break;
+      default:
+        return 1;
+    }
+  }
+}
+
 
 /***/ })
 
@@ -3742,7 +3755,6 @@ function defaultProject() {
     dueDate: (0,date_fns__WEBPACK_IMPORTED_MODULE_5__.default)(Date.now(), { days: 1 }),
     priority: 'medium',
   });
-  a.toggleComplete();
 
   const b = new _todo__WEBPACK_IMPORTED_MODULE_1__.default({
     title: 'Positive action',

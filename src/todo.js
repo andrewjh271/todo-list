@@ -21,7 +21,6 @@ export default class Todo {
     if (params.dueDate) this.dueDate = new Date(params.dueDate);
     this.priority = params.priority;
     this.isComplete = params.isComplete;
-
     Observer.emit('updateProject');
   }
 

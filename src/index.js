@@ -25,7 +25,6 @@ function defaultProject() {
     dueDate: add(Date.now(), { days: 1 }),
     priority: 'medium',
   });
-  a.toggleComplete();
 
   const b = new Todo({
     title: 'Positive action',
