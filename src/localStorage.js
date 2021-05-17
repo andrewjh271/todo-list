@@ -1,7 +1,12 @@
 import { on } from './observer';
 
-on('updateProjects', update);
+on('updateProjects', updateProjects);
+on('assignCurrentProject', updateCurrentProject);
 
-function update(projects) {
+function updateProjects(projects) {
   localStorage.setItem('projects', JSON.stringify(projects));
+}
+
+function updateCurrentProject(index) {
+  localStorage.setItem('currentProjectIndex', index);
 }

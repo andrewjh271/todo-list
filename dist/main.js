@@ -3250,10 +3250,15 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _observer__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./observer */ "./src/observer.js");
 
 
-(0,_observer__WEBPACK_IMPORTED_MODULE_0__.on)('updateProjects', update);
+(0,_observer__WEBPACK_IMPORTED_MODULE_0__.on)('updateProjects', updateProjects);
+(0,_observer__WEBPACK_IMPORTED_MODULE_0__.on)('assignCurrentProject', updateCurrentProject);
 
-function update(projects) {
+function updateProjects(projects) {
   localStorage.setItem('projects', JSON.stringify(projects));
+}
+
+function updateCurrentProject(index) {
+  localStorage.setItem('currentProjectIndex', index);
 }
 
 /***/ }),
@@ -3727,7 +3732,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _DOMcontroller__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./DOMcontroller */ "./src/DOMcontroller.js");
 /* harmony import */ var _localStorage__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./localStorage */ "./src/localStorage.js");
 /* harmony import */ var _projectsManager__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./projectsManager */ "./src/projectsManager.js");
-/* harmony import */ var date_fns__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! date-fns */ "./node_modules/date-fns/esm/add/index.js");
+/* harmony import */ var _observer_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./observer.js */ "./src/observer.js");
+/* harmony import */ var date_fns__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! date-fns */ "./node_modules/date-fns/esm/add/index.js");
+
 
 
 
@@ -3752,21 +3759,21 @@ function defaultProject() {
   const a = new _todo__WEBPACK_IMPORTED_MODULE_1__.default({
     title: 'Positive thinking',
     description: 'Consider all the great things you\'ll accomplish with this Todo App',
-    dueDate: (0,date_fns__WEBPACK_IMPORTED_MODULE_5__.default)(Date.now(), { days: 1 }),
+    dueDate: (0,date_fns__WEBPACK_IMPORTED_MODULE_6__.default)(Date.now(), { days: 1 }),
     priority: 'medium',
   });
 
   const b = new _todo__WEBPACK_IMPORTED_MODULE_1__.default({
     title: 'Positive action',
     description: 'Enjoy the feeling of accomplishment as you check off this Todo',
-    dueDate: (0,date_fns__WEBPACK_IMPORTED_MODULE_5__.default)(Date.now(), { days: 2 }),
+    dueDate: (0,date_fns__WEBPACK_IMPORTED_MODULE_6__.default)(Date.now(), { days: 2 }),
     priority: 'high',
   });
 
   const c = new _todo__WEBPACK_IMPORTED_MODULE_1__.default({
     title: 'Positive presence',
     description: 'Remember that the real Todo is the journey',
-    dueDate: (0,date_fns__WEBPACK_IMPORTED_MODULE_5__.default)(Date.now(), { days: 3 }),
+    dueDate: (0,date_fns__WEBPACK_IMPORTED_MODULE_6__.default)(Date.now(), { days: 3 }),
     priority: 'low',
   });
 
@@ -3774,6 +3781,9 @@ function defaultProject() {
   return project;
 }
 
+const index = localStorage.getItem('currentProjectIndex') || 0;
+_observer_js__WEBPACK_IMPORTED_MODULE_5__.emit('assignCurrentProject', index);
+_observer_js__WEBPACK_IMPORTED_MODULE_5__.emit('updateProject');
 })();
 
 /******/ })()

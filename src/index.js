@@ -3,6 +3,7 @@ import Todo from './todo';
 import './DOMcontroller';
 import './localStorage';
 import * as ProjectsManager from './projectsManager';
+import * as Observer from './observer.js'
 import { add } from 'date-fns';
 
 const storedProjects = localStorage.getItem('projects');
@@ -43,3 +44,7 @@ function defaultProject() {
   [a, b, c].forEach((todo) => project.addTodo(todo));
   return project;
 }
+
+const index = localStorage.getItem('currentProjectIndex') || 0;
+Observer.emit('assignCurrentProject', index);
+Observer.emit('updateProject');
