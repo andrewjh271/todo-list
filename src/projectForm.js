@@ -36,13 +36,21 @@ function addProject(e) {
 function editProject() {
   const editProject = document.querySelector('.edit-project-form')
 
+  const header = document.createElement('h1');
+  header.innerHTML = `Edit <i>${currentProject.title}</i>`;
+
   const title = document.createElement('input');
   title.setAttribute('type', 'text');
   title.value = currentProject.title;
+  title.classList.add('form-line');
   
   const description = document.createElement('textarea');
   description.placeholder = 'Description...'
   description.value = currentProject.description;
+  description.classList.add('form-line');
+
+  const buttonContainer = document.createElement('div');
+  buttonContainer.classList.add('form-line');
 
   const exit = document.createElement('button');
   exit.textContent = 'Exit';
@@ -51,10 +59,15 @@ function editProject() {
   submit.setAttribute('type', 'submit');
   submit.setAttribute('value', 'Submit');
 
+  buttonContainer.appendChild(exit);
+  buttonContainer.appendChild(submit);
+
+  editProject.append(header);
   editProject.append(title);
   editProject.append(description);
-  editProject.append(exit);
-  editProject.append(submit);
+  editProject.append(buttonContainer);
+
+  editProject.classList.remove('hidden');
 
   editProject.addEventListener('submit', (e) => {
     e.preventDefault();
@@ -63,7 +76,11 @@ function editProject() {
       description: description.value
     });
     editProject.innerHTML = '';
+    editProject.classList.add('hidden');
   })
 
-  exit.addEventListener('click', () => editProject.innerHTML = '');
+  exit.addEventListener('click', () => {
+    editProject.classList.add('hidden');
+    editProject.innerHTML = '';
+  })
 }

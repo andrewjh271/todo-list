@@ -1,3 +1,4 @@
+
 const form = document.querySelector('.view-todo');
 
 export default function display(todo) {
@@ -6,15 +7,28 @@ export default function display(todo) {
   const title = document.createElement('input');
   title.setAttribute('type', 'text');
   title.setAttribute('value', todo.title);
+  title.classList.add('form-line');
 
   const description = document.createElement('textarea');
   description.placeholder = 'Description...'
   description.value = todo.description;
+  description.classList.add('form-line');
 
+  const dateContainer = document.createElement('div');
+  const dateLabel = document.createElement('label');
+  dateLabel.textContent = 'Deadline';
   const dueDate = document.createElement('input');
   dueDate.setAttribute('type', 'date');
   dueDate.value = todo.dueDateString;
+  dateContainer.appendChild(dateLabel);
+  dateContainer.appendChild(dueDate);
 
+  const inputContainer = document.createElement('div');
+  inputContainer.classList.add('form-line');
+
+  const priorityContainer = document.createElement('div');
+  const priorityLabel = document.createElement('label');
+  priorityLabel.textContent = 'Priority';
   const priority = document.createElement('select');
   const option1 = document.createElement('option');
   option1.value = 'low';
@@ -29,25 +43,41 @@ export default function display(todo) {
   priority.add(option2);
   priority.add(option3);
   priority.selectedIndex = ['low', 'medium', 'high'].findIndex(el => el === todo.priority);
+  priorityContainer.appendChild(priorityLabel);
+  priorityContainer.appendChild(priority);
 
+  const isCompleteContainer = document.createElement('div');
+  const isCompleteLabel = document.createElement('div');
+  isCompleteLabel.textContent = 'Completed?';
   const isComplete = document.createElement('input');
   isComplete.setAttribute('type', 'checkbox');
   isComplete.checked = todo.isComplete;
+  isCompleteContainer.appendChild(isCompleteLabel);
+  isCompleteContainer.appendChild(isComplete);
 
+  inputContainer.appendChild(dateContainer);
+  inputContainer.appendChild(priorityContainer);
+
+  const buttonContainer = document.createElement('div');
+  buttonContainer.classList.add('form-line');
+  
   const exit = document.createElement('button');
   exit.textContent = 'Exit';
-
+  
   const submit = document.createElement('input');
   submit.setAttribute('type', 'submit');
   submit.setAttribute('value', 'Submit');
+  
+  buttonContainer.appendChild(isCompleteContainer);
+  buttonContainer.appendChild(exit);
+  buttonContainer.appendChild(submit);
 
   form.appendChild(title);
   form.appendChild(description);
-  form.appendChild(dueDate);
-  form.appendChild(priority);
-  form.appendChild(isComplete);
-  form.appendChild(exit);
-  form.appendChild(submit);
+  form.appendChild(inputContainer);
+  form.appendChild(buttonContainer);
+
+  form.classList.remove('hidden');
 
   form.addEventListener('submit', (e) => {
     e.preventDefault();
@@ -65,5 +95,6 @@ export default function display(todo) {
 }
 
 function clear() {
+  form.classList.add('hidden');
   form.innerHTML = ''
 }

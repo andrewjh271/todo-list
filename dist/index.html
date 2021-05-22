@@ -10,52 +10,91 @@
   </head>
 
   <body>
-    <h1>Todo App</h1>
+    <div class='container'>
+      <header>
+        <button class='toggle-projects'>
+          <span class="material-icons hidden">menu</span>
+          <span class="material-icons">close</span>
+        </button>
+        <h1>Todo App</h1>
+        <button>
+          <span class="material-icons">bolt</span>
+        </button>
+      </header>
+  
+      <aside class='projects active'>
+        <div class='banner'>
 
-    <aside class='projects'>
-      <h3>Projects</h3>
-      <button class='add-project'>Add +</button>
-      <form class='project-form hidden'>
-        <input type='text' name='title' placeholder='title' required>
-        <textarea name='description' placeholder='Description'></textarea>
-        <button class='cancel-project'>Cancel</button>
-        <input type='submit' value='+ Add Project'>
-      </form>
-      <ul class='project-list'></ul>
-    </aside>
+          <h2>Projects</h2>
+          <button class='add-project'>
+            <span class="material-icons">add</span>
+          </button>
+        </div>
+        <ul class='project-list'></ul>
+      </aside>
 
-    <div class='project hidden'>
-      <h2 class='project-title'></h2>
-      <h4 class='project-description'></h4>
-      <button class='new-todo'>Create Todo</button>
-      <button class='edit-project-button'>Edit</button>
-      <form class='edit-project-form'></form>
-      <form class='new-todo-form hidden'>
-        <input type='text' name='title' placeholder='Title' required>
-        <textarea name='description' placeholder='Description'></textarea>
-        <input type='date' name='due-date'>
-        <select name='priority' required>
-          <option disabled selected value=''>Priority</option>
-          <option value='low'>Low</option>
-          <option value='medium'>Medium</option>
-          <option value='high'>High</option>
-        </select>
-        <button class='cancel-todo'>Cancel</button>
-        <input type='submit' value='+ Add Todo'>
+      <form class='project-form pop-up hidden'>
+        <h1>New Project</h1>
+        <input type='text' name='title' placeholder='Title' class='form-line' required>
+        <textarea name='description' placeholder='Description' class='form-line'></textarea>
+        <div class='form-line'>
+          <button class='cancel-project'>Cancel</button>
+          <input type='submit' value='+ Add Project'>
+        </div>
       </form>
-      <table class='todo-table'>
-        <thead>
-          <tr>
-            <th data-name='title'>Title</th>
-            <th data-name='sortedDueDate'>Due Date</th>
-            <th data-name='sortedPriority'>Priority</th>
-            <th data-name='isComplete'>Complete?</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody class='todo-items'></tbody>
-      </table>
-      <form class='view-todo'></form>
+  
+      <div class='project hidden'>
+        <div class='banner'>
+          <div>
+            <h2 class='project-title'></h2>
+            <button class='edit-project-button'>
+              <span class="material-icons">edit</span>
+            </button>
+          </div>
+          <button class='new-todo'>
+            <span class="material-icons">add</span>
+          </button>
+        </div>
+        <h4 class='project-description'></h4>
+        <form class='edit-project-form hidden pop-up'></form>
+        <form class='new-todo-form pop-up hidden'>
+          <h1></h1>
+          <input type='text' name='title' class='form-line' placeholder='Title' required>
+          <textarea name='description' class='form-line' placeholder='Description'></textarea>
+          <div class='form-line'>
+            <div>
+              <label for='date'>Deadline</label>
+              <input type='date' id='date' name='due-date'>
+            </div>
+            <select name='priority' required>
+              <option disabled selected value=''>Priority</option>
+              <option value='low'>Low</option>
+              <option value='medium'>Medium</option>
+              <option value='high'>High</option>
+            </select>
+          </div>
+          <div class='form-line'>
+            <button class='cancel-todo'>Cancel</button>
+            <input type='submit' value='+ Add Todo'>
+          </div>
+        </form>
+        <table class='todo-table'>
+          <thead>
+            <tr>
+              <th data-name='title'>Title</th>
+              <th data-name='sortedDueDate'>Due</th>
+              <th data-name='sortedPriority'>Priority</th>
+              <th data-name='isComplete'>
+                <span class="material-icons">done_outline</span>
+                </th>
+              <th></th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody class='todo-items'></tbody>
+        </table>
+        <form class='view-todo pop-up hidden'></form>
+      </div>
     </div>
 
     <script src="main.js"></script>

@@ -3,6 +3,7 @@ import { currentProject } from './projectsManager';
 
 const newTodoButton = document.querySelector('.new-todo');
 const todoForm = document.querySelector('.new-todo-form');
+const formTitle = todoForm.querySelector('h1');
 const cancelTodo = document.querySelector('.cancel-todo');
 
 newTodoButton.addEventListener('click', toggleTodoForm);
@@ -11,6 +12,7 @@ cancelTodo.addEventListener('click', toggleTodoForm);
 
 function toggleTodoForm(e) {
   e.preventDefault();
+  formTitle.innerHTML = `New Todo for <i>${currentProject.title}</i>`;
   newTodoButton.classList.toggle('hidden');
   todoForm.classList.toggle('hidden');
 }
