@@ -3148,7 +3148,11 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+const projects = document.querySelector('.projects');
 const projectList = document.querySelector('.project-list');
+
+const toggleProjects = document.querySelector('.toggle-projects');
+const toggleIcons = toggleProjects.querySelectorAll('.material-icons');
 
 const project = document.querySelector('.project');
 const projectTitle = project.querySelector('.project-title');
@@ -3159,6 +3163,7 @@ const todos = todoTable.querySelector('.todo-items');
 const headings = todoTable.querySelectorAll('th');
 
 projectList.addEventListener('click', showProject);
+toggleProjects.addEventListener('click', toggleSidebar);
 headings.forEach(heading => heading.addEventListener('click', sortDisplay));
 
 todos.addEventListener('click', toggleProgress);
@@ -3169,6 +3174,11 @@ let sortParam;
 
 _observer__WEBPACK_IMPORTED_MODULE_0__.on('updateProjects', updateProjects);
 _observer__WEBPACK_IMPORTED_MODULE_0__.on('updateProject', showProject);
+
+function toggleSidebar() {
+  projects.classList.toggle('active');
+  toggleIcons.forEach((icon) => icon.classList.toggle('hidden'));
+}
 
 function updateProjects(projects) {
   projectList.innerHTML = projects
@@ -3191,7 +3201,7 @@ function showProject(e) {
   todos.innerHTML = _projectsManager__WEBPACK_IMPORTED_MODULE_2__.currentProject.todos.sort((a, b) => (a[sortParam] < b[sortParam] ? -1 : 1))
     .map(
       (todo, i) => `
-      <tr>
+      <tr class='${todo.isComplete ? 'complete' : todo.priority}'>
       <td>${todo.title}</td>
       <td>${todo.dueDateFormatted}</td>
       <td>${todo.priority}</td>
@@ -3277,6 +3287,7 @@ __webpack_require__.r(__webpack_exports__);
 
 const newTodoButton = document.querySelector('.new-todo');
 const todoForm = document.querySelector('.new-todo-form');
+const formTitle = todoForm.querySelector('h1');
 const cancelTodo = document.querySelector('.cancel-todo');
 
 newTodoButton.addEventListener('click', toggleTodoForm);
@@ -3285,6 +3296,7 @@ cancelTodo.addEventListener('click', toggleTodoForm);
 
 function toggleTodoForm(e) {
   e.preventDefault();
+  formTitle.innerHTML = `New Todo for <i>${_projectsManager__WEBPACK_IMPORTED_MODULE_1__.currentProject.title}</i>`;
   newTodoButton.classList.toggle('hidden');
   todoForm.classList.toggle('hidden');
 }
@@ -3432,13 +3444,21 @@ function addProject(e) {
 function editProject() {
   const editProject = document.querySelector('.edit-project-form')
 
+  const header = document.createElement('h1');
+  header.innerHTML = `Edit <i>${_projectsManager__WEBPACK_IMPORTED_MODULE_1__.currentProject.title}</i>`;
+
   const title = document.createElement('input');
   title.setAttribute('type', 'text');
   title.value = _projectsManager__WEBPACK_IMPORTED_MODULE_1__.currentProject.title;
+  title.classList.add('form-line');
   
   const description = document.createElement('textarea');
   description.placeholder = 'Description...'
   description.value = _projectsManager__WEBPACK_IMPORTED_MODULE_1__.currentProject.description;
+  description.classList.add('form-line');
+
+  const buttonContainer = document.createElement('div');
+  buttonContainer.classList.add('form-line');
 
   const exit = document.createElement('button');
   exit.textContent = 'Exit';
@@ -3447,10 +3467,15 @@ function editProject() {
   submit.setAttribute('type', 'submit');
   submit.setAttribute('value', 'Submit');
 
+  buttonContainer.appendChild(exit);
+  buttonContainer.appendChild(submit);
+
+  editProject.append(header);
   editProject.append(title);
   editProject.append(description);
-  editProject.append(exit);
-  editProject.append(submit);
+  editProject.append(buttonContainer);
+
+  editProject.classList.remove('hidden');
 
   editProject.addEventListener('submit', (e) => {
     e.preventDefault();
@@ -3459,9 +3484,13 @@ function editProject() {
       description: description.value
     });
     editProject.innerHTML = '';
+    editProject.classList.add('hidden');
   })
 
-  exit.addEventListener('click', () => editProject.innerHTML = '');
+  exit.addEventListener('click', () => {
+    editProject.classList.add('hidden');
+    editProject.innerHTML = '';
+  })
 }
 
 /***/ }),
@@ -3525,6 +3554,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ display)
 /* harmony export */ });
+
 const form = document.querySelector('.view-todo');
 
 function display(todo) {
@@ -3533,15 +3563,28 @@ function display(todo) {
   const title = document.createElement('input');
   title.setAttribute('type', 'text');
   title.setAttribute('value', todo.title);
+  title.classList.add('form-line');
 
   const description = document.createElement('textarea');
   description.placeholder = 'Description...'
   description.value = todo.description;
+  description.classList.add('form-line');
 
+  const dateContainer = document.createElement('div');
+  const dateLabel = document.createElement('label');
+  dateLabel.textContent = 'Deadline';
   const dueDate = document.createElement('input');
   dueDate.setAttribute('type', 'date');
   dueDate.value = todo.dueDateString;
+  dateContainer.appendChild(dateLabel);
+  dateContainer.appendChild(dueDate);
 
+  const inputContainer = document.createElement('div');
+  inputContainer.classList.add('form-line');
+
+  const priorityContainer = document.createElement('div');
+  const priorityLabel = document.createElement('label');
+  priorityLabel.textContent = 'Priority';
   const priority = document.createElement('select');
   const option1 = document.createElement('option');
   option1.value = 'low';
@@ -3556,25 +3599,41 @@ function display(todo) {
   priority.add(option2);
   priority.add(option3);
   priority.selectedIndex = ['low', 'medium', 'high'].findIndex(el => el === todo.priority);
+  priorityContainer.appendChild(priorityLabel);
+  priorityContainer.appendChild(priority);
 
+  const isCompleteContainer = document.createElement('div');
+  const isCompleteLabel = document.createElement('div');
+  isCompleteLabel.textContent = 'Completed?';
   const isComplete = document.createElement('input');
   isComplete.setAttribute('type', 'checkbox');
   isComplete.checked = todo.isComplete;
+  isCompleteContainer.appendChild(isCompleteLabel);
+  isCompleteContainer.appendChild(isComplete);
 
+  inputContainer.appendChild(dateContainer);
+  inputContainer.appendChild(priorityContainer);
+
+  const buttonContainer = document.createElement('div');
+  buttonContainer.classList.add('form-line');
+  
   const exit = document.createElement('button');
   exit.textContent = 'Exit';
-
+  
   const submit = document.createElement('input');
   submit.setAttribute('type', 'submit');
   submit.setAttribute('value', 'Submit');
+  
+  buttonContainer.appendChild(isCompleteContainer);
+  buttonContainer.appendChild(exit);
+  buttonContainer.appendChild(submit);
 
   form.appendChild(title);
   form.appendChild(description);
-  form.appendChild(dueDate);
-  form.appendChild(priority);
-  form.appendChild(isComplete);
-  form.appendChild(exit);
-  form.appendChild(submit);
+  form.appendChild(inputContainer);
+  form.appendChild(buttonContainer);
+
+  form.classList.remove('hidden');
 
   form.addEventListener('submit', (e) => {
     e.preventDefault();
@@ -3592,6 +3651,7 @@ function display(todo) {
 }
 
 function clear() {
+  form.classList.add('hidden');
   form.innerHTML = ''
 }
 
