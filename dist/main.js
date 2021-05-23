@@ -3214,8 +3214,8 @@ function showProject(e) {
           }
         </button>
       </td>
-      <td><button class='view' data-index='${i}'>View</button></td>
-      <td><button class='delete' data-index='${i}'>Delete</button></td>
+      <td><button class='view' data-index='${i}'><span class="material-icons">zoom_in</span></button></td>
+      <td><button class='delete' data-index='${i}'><span class="material-icons">delete_forever</span></button></td>
       </tr>`
     )
     .join('');
@@ -3242,6 +3242,9 @@ function viewTodo(e) {
 
 function deleteTodo(e) {
   if (!e.target.matches('.delete')) return;
+
+  const confirmation = confirm(`Do you really want to delete this Todo?`);
+  if (!confirmation) return;
 
   const index = e.target.dataset.index;
   _projectsManager__WEBPACK_IMPORTED_MODULE_2__.currentProject.removeTodo(index);
