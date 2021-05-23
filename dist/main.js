@@ -3162,6 +3162,8 @@ const todoTable = project.querySelector('.todo-table');
 const todos = todoTable.querySelector('.todo-items');
 const headings = todoTable.querySelectorAll('th');
 
+const randomTodo = document.querySelector('.random-todo');
+
 projectList.addEventListener('click', showProject);
 toggleProjects.addEventListener('click', toggleSidebar);
 headings.forEach(heading => heading.addEventListener('click', sortDisplay));
@@ -3169,6 +3171,8 @@ headings.forEach(heading => heading.addEventListener('click', sortDisplay));
 todos.addEventListener('click', toggleProgress);
 todos.addEventListener('click', viewTodo);
 todos.addEventListener('click', deleteTodo);
+
+randomTodo.addEventListener('click', showRandomTodo);
 
 let sortParam;
 
@@ -3249,6 +3253,21 @@ function deleteTodo(e) {
 
   const index = e.target.dataset.index;
   _projectsManager__WEBPACK_IMPORTED_MODULE_2__.currentProject.removeTodo(index);
+}
+
+function showRandomTodo() {
+  const tagline = document.createElement('h1');
+  tagline.innerHTML = `
+    <span class="material-icons">bolt</span>
+    <span class="material-icons">bolt</span>
+    <span class="material-icons">bolt</span>
+    <i>Random Todo Mode!</i>
+    <span class="material-icons">bolt</span>
+    <span class="material-icons">bolt</span>
+    <span class="material-icons">bolt</span>
+  `
+  const project = (0,_projectsManager__WEBPACK_IMPORTED_MODULE_2__.randomProject)();
+  (0,_showTodo__WEBPACK_IMPORTED_MODULE_1__.default)(project.randomTodo(), tagline);
 }
 
 
@@ -3372,6 +3391,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (/* binding */ Project)
 /* harmony export */ });
 /* harmony import */ var _observer__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./observer */ "./src/observer.js");
+/* harmony import */ var _todo__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./todo */ "./src/todo.js");
+
 
 
 class Project {
@@ -3395,6 +3416,19 @@ class Project {
     this.title = params.title;
     this.description = params.description;
     _observer__WEBPACK_IMPORTED_MODULE_0__.emit('updateProject');
+  }
+
+  randomTodo() {
+    if (this.todos.length === 0) {
+      return new _todo__WEBPACK_IMPORTED_MODULE_1__.default({
+        title: 'Create a Todo for this Project!',
+        description: `${this.title} isn't much of a project without any Todos...`,
+        dueDate: Date.now(),
+        priority: 'high'
+      })
+    }
+    const index = Math.floor(this.todos.length * Math.random());
+    return this.todos[index];
   }
 }
 
@@ -3510,6 +3544,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "add": () => (/* binding */ add),
 /* harmony export */   "remove": () => (/* binding */ remove),
 /* harmony export */   "load": () => (/* binding */ load),
+/* harmony export */   "randomProject": () => (/* binding */ randomProject),
 /* harmony export */   "currentProject": () => (/* binding */ currentProject)
 /* harmony export */ });
 /* harmony import */ var _observer_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./observer.js */ "./src/observer.js");
@@ -3544,6 +3579,11 @@ function update() {
   _observer_js__WEBPACK_IMPORTED_MODULE_0__.emit('updateProjects', projects);
 }
 
+function randomProject() {
+  const index = Math.floor(projects.length * Math.random());
+  return projects[index];
+}
+
 
 
 /***/ }),
@@ -3561,7 +3601,7 @@ __webpack_require__.r(__webpack_exports__);
 
 const form = document.querySelector('.view-todo');
 
-function display(todo) {
+function display(todo, tagline) {
   clear();
 
   const title = document.createElement('input');
@@ -3631,6 +3671,11 @@ function display(todo) {
   buttonContainer.appendChild(isCompleteContainer);
   buttonContainer.appendChild(exit);
   buttonContainer.appendChild(submit);
+
+  if (tagline) {
+    form.appendChild(tagline);
+    form.classList.add('random-todo-mode');
+  }
 
   form.appendChild(title);
   form.appendChild(description);

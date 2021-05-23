@@ -157,6 +157,12 @@ form h1 {
   font-size: 25px;
 }
 
+.random-todo-mode h1 {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
 input {
   height: 36px;
   border: 1px solid #a4a4a4;
@@ -301,9 +307,9 @@ tr {
 
 .pop-up {
   position: fixed;
+  z-index: 99;
   width: 100vw;
   height: 100vh;
-  // padding: 35vh 37vw 35vh 37vw;
   padding: 35vh 25vw 35vh 33vw;
   background-color: rgba(168, 166, 166, 0.432);
   top: 0;
@@ -327,6 +333,11 @@ tr {
 .new-todo-form.pop-up::after {
   height: 327px;
   top: -297px;
+}
+
+.random-todo-mode.pop-up::after {
+  height: 339px;
+  top: -300px;
 }
 
 .pop-up.hidden {

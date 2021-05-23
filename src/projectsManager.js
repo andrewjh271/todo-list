@@ -29,4 +29,9 @@ function update() {
   Observer.emit('updateProjects', projects);
 }
 
-export { add, remove, load, currentProject }
+function randomProject() {
+  const index = Math.floor(projects.length * Math.random());
+  return projects[index];
+}
+
+export { add, remove, load, randomProject, currentProject }

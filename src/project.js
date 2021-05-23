@@ -1,4 +1,5 @@
 import * as Observer from './observer';
+import Todo from './todo';
 
 export default class Project {
   constructor(params) {
@@ -21,5 +22,18 @@ export default class Project {
     this.title = params.title;
     this.description = params.description;
     Observer.emit('updateProject');
+  }
+
+  randomTodo() {
+    if (this.todos.length === 0) {
+      return new Todo({
+        title: 'Create a Todo for this Project!',
+        description: `${this.title} isn't much of a project without any Todos...`,
+        dueDate: Date.now(),
+        priority: 'high'
+      })
+    }
+    const index = Math.floor(this.todos.length * Math.random());
+    return this.todos[index];
   }
 }

@@ -1,6 +1,6 @@
 import * as Observer from './observer';
 import showTodo from './showTodo';
-import { currentProject } from './projectsManager';
+import { currentProject, randomProject } from './projectsManager';
 import './projectForm';
 import './newTodo.js';
 
@@ -18,6 +18,8 @@ const todoTable = project.querySelector('.todo-table');
 const todos = todoTable.querySelector('.todo-items');
 const headings = todoTable.querySelectorAll('th');
 
+const randomTodo = document.querySelector('.random-todo');
+
 projectList.addEventListener('click', showProject);
 toggleProjects.addEventListener('click', toggleSidebar);
 headings.forEach(heading => heading.addEventListener('click', sortDisplay));
@@ -25,6 +27,8 @@ headings.forEach(heading => heading.addEventListener('click', sortDisplay));
 todos.addEventListener('click', toggleProgress);
 todos.addEventListener('click', viewTodo);
 todos.addEventListener('click', deleteTodo);
+
+randomTodo.addEventListener('click', showRandomTodo);
 
 let sortParam;
 
@@ -106,4 +110,19 @@ function deleteTodo(e) {
 
   const index = e.target.dataset.index;
   currentProject.removeTodo(index);
+}
+
+function showRandomTodo() {
+  const tagline = document.createElement('h1');
+  tagline.innerHTML = `
+    <span class="material-icons">bolt</span>
+    <span class="material-icons">bolt</span>
+    <span class="material-icons">bolt</span>
+    <i>Random Todo Mode!</i>
+    <span class="material-icons">bolt</span>
+    <span class="material-icons">bolt</span>
+    <span class="material-icons">bolt</span>
+  `
+  const project = randomProject();
+  showTodo(project.randomTodo(), tagline);
 }

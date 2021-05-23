@@ -1,7 +1,7 @@
 
 const form = document.querySelector('.view-todo');
 
-export default function display(todo) {
+export default function display(todo, tagline) {
   clear();
 
   const title = document.createElement('input');
@@ -71,6 +71,11 @@ export default function display(todo) {
   buttonContainer.appendChild(isCompleteContainer);
   buttonContainer.appendChild(exit);
   buttonContainer.appendChild(submit);
+
+  if (tagline) {
+    form.appendChild(tagline);
+    form.classList.add('random-todo-mode');
+  }
 
   form.appendChild(title);
   form.appendChild(description);
