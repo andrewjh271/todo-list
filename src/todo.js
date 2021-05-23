@@ -7,7 +7,7 @@ export default class Todo {
     this.description = params.description;
     if (params.dueDate) this.dueDate = new Date(params.dueDate);
     this.priority = params.priority;
-    this.isComplete = params.isComplete;
+    this.isComplete = params.isComplete || false;
   }
 
   toggleComplete() {
@@ -23,13 +23,17 @@ export default class Todo {
     this.isComplete = params.isComplete;
     Observer.emit('updateProject');
   }
-
+  
   get dueDateFormatted() {
     return this.dueDate ? format(this.dueDate, 'M/d/yy') : '';
   }
-
+  
   get dueDateString() {
     return this.dueDate ? format(this.dueDate, 'yyyy-MM-dd') : '';
+  }
+  
+  get sortedTitle() {
+    return this.title.toLowerCase();
   }
 
   get sortedDueDate() {

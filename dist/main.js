@@ -3198,6 +3198,7 @@ function showProject(e) {
   project.classList.remove('hidden');
   projectTitle.textContent = _projectsManager__WEBPACK_IMPORTED_MODULE_2__.currentProject.title;
   projectDescription.textContent = _projectsManager__WEBPACK_IMPORTED_MODULE_2__.currentProject.description;
+  
   todos.innerHTML = _projectsManager__WEBPACK_IMPORTED_MODULE_2__.currentProject.todos.sort((a, b) => (a[sortParam] < b[sortParam] ? -1 : 1))
     .map(
       (todo, i) => `
@@ -3681,7 +3682,7 @@ class Todo {
     this.description = params.description;
     if (params.dueDate) this.dueDate = new Date(params.dueDate);
     this.priority = params.priority;
-    this.isComplete = params.isComplete;
+    this.isComplete = params.isComplete || false;
   }
 
   toggleComplete() {
@@ -3697,13 +3698,17 @@ class Todo {
     this.isComplete = params.isComplete;
     _observer__WEBPACK_IMPORTED_MODULE_0__.emit('updateProject');
   }
-
+  
   get dueDateFormatted() {
     return this.dueDate ? (0,date_fns__WEBPACK_IMPORTED_MODULE_1__.default)(this.dueDate, 'M/d/yy') : '';
   }
-
+  
   get dueDateString() {
     return this.dueDate ? (0,date_fns__WEBPACK_IMPORTED_MODULE_1__.default)(this.dueDate, 'yyyy-MM-dd') : '';
+  }
+  
+  get sortedTitle() {
+    return this.title.toLowerCase();
   }
 
   get sortedDueDate() {

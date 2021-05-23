@@ -54,6 +54,7 @@ function showProject(e) {
   project.classList.remove('hidden');
   projectTitle.textContent = currentProject.title;
   projectDescription.textContent = currentProject.description;
+  
   todos.innerHTML = currentProject.todos
     .sort((a, b) => (a[sortParam] < b[sortParam] ? -1 : 1))
     .map(
