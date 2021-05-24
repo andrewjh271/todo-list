@@ -1,11 +1,13 @@
 import Project from './project';
-import { add, currentProject } from './projectsManager';
+import { add, currentProject, deleteCurrentProject } from './projectsManager';
 
 const newProjectButton = document.querySelector('.add-project');
 const editProjectButton = document.querySelector('.edit-project-button');
+const deleteProjectButton = document.querySelector('.delete-project-button');
 
 newProjectButton.addEventListener('click', display);
 editProjectButton.addEventListener('click', editProject);
+deleteProjectButton.addEventListener('click', deleteProject);
 
 const form = document.querySelector('.project-form');
 const cancel = form.querySelector('.cancel-project');
@@ -83,4 +85,12 @@ function editProject() {
     editProjectForm.classList.add('hidden');
     editProjectForm.innerHTML = '';
   });
+}
+
+function deleteProject() {
+  // eslint-disable-next-line no-restricted-globals
+  const confirmation = confirm('Do you really want to delete this Todo?');
+  if (!confirmation) return;
+
+  deleteCurrentProject();
 }

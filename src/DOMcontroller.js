@@ -1,4 +1,3 @@
-/* eslint-disable no-alert */
 /* eslint-disable indent */
 import * as Observer from './observer';
 import showTodo from './showTodo';
@@ -56,7 +55,10 @@ function showProject(e) {
     const { index } = e.target.dataset;
     Observer.emit('assignCurrentProject', index);
   }
-  if (!currentProject) return;
+  if (!currentProject) {
+    project.classList.add('hidden');
+    return;
+  }
   project.classList.remove('hidden');
   projectTitle.textContent = currentProject.title;
   projectDescription.textContent = currentProject.description;

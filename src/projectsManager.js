@@ -35,6 +35,18 @@ function randomProject() {
   return projects[index];
 }
 
+function deleteCurrentProject() {
+  for (let i = 0; i < projects.length; i++) {
+    if (projects[i] === currentProject) {
+      projects.splice(i, 1);
+      currentProject = null;
+      Observer.emit('updateProjects', projects);
+      Observer.emit('updateProject');
+      return;
+    }
+  }
+}
+
 export {
-  add, remove, load, randomProject, currentProject
+  add, remove, load, randomProject, deleteCurrentProject, currentProject
 };

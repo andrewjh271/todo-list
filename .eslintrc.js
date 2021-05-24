@@ -20,5 +20,6 @@ module.exports = {
       functions: 'never',
     }],
     'no-plusplus': 0,
+    'no-alert': 0,
   },
 };

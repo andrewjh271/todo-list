@@ -3142,7 +3142,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _projectsManager__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./projectsManager */ "./src/projectsManager.js");
 /* harmony import */ var _projectForm__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./projectForm */ "./src/projectForm.js");
 /* harmony import */ var _newTodo__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./newTodo */ "./src/newTodo.js");
-/* eslint-disable no-alert */
 /* eslint-disable indent */
 
 
@@ -3200,7 +3199,10 @@ function showProject(e) {
     const { index } = e.target.dataset;
     _observer__WEBPACK_IMPORTED_MODULE_0__.emit('assignCurrentProject', index);
   }
-  if (!_projectsManager__WEBPACK_IMPORTED_MODULE_2__.currentProject) return;
+  if (!_projectsManager__WEBPACK_IMPORTED_MODULE_2__.currentProject) {
+    project.classList.add('hidden');
+    return;
+  }
   project.classList.remove('hidden');
   projectTitle.textContent = _projectsManager__WEBPACK_IMPORTED_MODULE_2__.currentProject.title;
   projectDescription.textContent = _projectsManager__WEBPACK_IMPORTED_MODULE_2__.currentProject.description;
@@ -3454,9 +3456,11 @@ __webpack_require__.r(__webpack_exports__);
 
 const newProjectButton = document.querySelector('.add-project');
 const editProjectButton = document.querySelector('.edit-project-button');
+const deleteProjectButton = document.querySelector('.delete-project-button');
 
 newProjectButton.addEventListener('click', display);
 editProjectButton.addEventListener('click', editProject);
+deleteProjectButton.addEventListener('click', deleteProject);
 
 const form = document.querySelector('.project-form');
 const cancel = form.querySelector('.cancel-project');
@@ -3536,6 +3540,14 @@ function editProject() {
   });
 }
 
+function deleteProject() {
+  // eslint-disable-next-line no-restricted-globals
+  const confirmation = confirm('Do you really want to delete this Todo?');
+  if (!confirmation) return;
+
+  (0,_projectsManager__WEBPACK_IMPORTED_MODULE_1__.deleteCurrentProject)();
+}
+
 
 /***/ }),
 
@@ -3551,6 +3563,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "remove": () => (/* binding */ remove),
 /* harmony export */   "load": () => (/* binding */ load),
 /* harmony export */   "randomProject": () => (/* binding */ randomProject),
+/* harmony export */   "deleteCurrentProject": () => (/* binding */ deleteCurrentProject),
 /* harmony export */   "currentProject": () => (/* binding */ currentProject)
 /* harmony export */ });
 /* harmony import */ var _observer__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./observer */ "./src/observer.js");
@@ -3589,6 +3602,18 @@ function update() {
 function randomProject() {
   const index = Math.floor(projects.length * Math.random());
   return projects[index];
+}
+
+function deleteCurrentProject() {
+  for (let i = 0; i < projects.length; i++) {
+    if (projects[i] === currentProject) {
+      projects.splice(i, 1);
+      currentProject = null;
+      _observer__WEBPACK_IMPORTED_MODULE_0__.emit('updateProjects', projects);
+      _observer__WEBPACK_IMPORTED_MODULE_0__.emit('updateProject');
+      return;
+    }
+  }
 }
 
 
