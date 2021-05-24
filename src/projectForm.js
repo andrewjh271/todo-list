@@ -89,7 +89,7 @@ function editProject() {
 
 function deleteProject() {
   // eslint-disable-next-line no-restricted-globals
-  const confirmation = confirm('Do you really want to delete this Todo?');
+  const confirmation = confirm('Do you really want to delete this Project?');
   if (!confirmation) return;
 
   deleteCurrentProject();

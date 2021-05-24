@@ -3542,7 +3542,7 @@ function editProject() {
 
 function deleteProject() {
   // eslint-disable-next-line no-restricted-globals
-  const confirmation = confirm('Do you really want to delete this Todo?');
+  const confirmation = confirm('Do you really want to delete this Project?');
   if (!confirmation) return;
 
   (0,_projectsManager__WEBPACK_IMPORTED_MODULE_1__.deleteCurrentProject)();
