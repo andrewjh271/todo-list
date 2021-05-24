@@ -30,8 +30,8 @@ export default class Project {
         title: 'Create a Todo for this Project!',
         description: `${this.title} isn't much of a project without any Todos...`,
         dueDate: Date.now(),
-        priority: 'high'
-      })
+        priority: 'high',
+      });
     }
     const index = Math.floor(this.todos.length * Math.random());
     return this.todos[index];

@@ -23,15 +23,15 @@ export default class Todo {
     this.isComplete = params.isComplete;
     Observer.emit('updateProject');
   }
-  
+
   get dueDateFormatted() {
     return this.dueDate ? format(this.dueDate, 'M/d/yy') : '';
   }
-  
+
   get dueDateString() {
     return this.dueDate ? format(this.dueDate, 'yyyy-MM-dd') : '';
   }
-  
+
   get sortedTitle() {
     return this.title.toLowerCase();
   }
@@ -41,13 +41,11 @@ export default class Todo {
   }
 
   get sortedPriority() {
-    switch(this.priority) {
+    switch (this.priority) {
       case 'low':
         return 3;
-        break;
       case 'medium':
         return 2;
-        break;
       default:
         return 1;
     }

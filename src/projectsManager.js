@@ -1,4 +1,5 @@
-import * as Observer from './observer.js'
+/* eslint-disable import/no-mutable-exports */
+import * as Observer from './observer';
 
 let projects = [];
 let currentProject;
@@ -10,17 +11,17 @@ function assignCurrentProject(index) {
   currentProject = projects[index];
 }
 
-function add (project) {
+function add(project) {
   projects.push(project);
   Observer.emit('updateProjects', projects);
 }
 
-function remove (index) {
+function remove(index) {
   projects.splice(index, 1);
   Observer.emit('updateProjects', projects);
 }
 
-function load (data) {
+function load(data) {
   projects = data;
   Observer.emit('updateProjects', projects);
 }
@@ -34,4 +35,6 @@ function randomProject() {
   return projects[index];
 }
 
-export { add, remove, load, randomProject, currentProject }
+export {
+  add, remove, load, randomProject, currentProject
+};

@@ -1,8 +1,10 @@
+/* eslint-disable no-alert */
+/* eslint-disable indent */
 import * as Observer from './observer';
 import showTodo from './showTodo';
 import { currentProject, randomProject } from './projectsManager';
 import './projectForm';
-import './newTodo.js';
+import './newTodo';
 
 const projects = document.querySelector('.projects');
 const projectList = document.querySelector('.project-list');
@@ -22,7 +24,7 @@ const randomTodo = document.querySelector('.random-todo');
 
 projectList.addEventListener('click', showProject);
 toggleProjects.addEventListener('click', toggleSidebar);
-headings.forEach(heading => heading.addEventListener('click', sortDisplay));
+headings.forEach((heading) => heading.addEventListener('click', sortDisplay));
 
 todos.addEventListener('click', toggleProgress);
 todos.addEventListener('click', viewTodo);
@@ -40,25 +42,25 @@ function toggleSidebar() {
   toggleIcons.forEach((icon) => icon.classList.toggle('hidden'));
 }
 
-function updateProjects(projects) {
-  projectList.innerHTML = projects
+function updateProjects(currentProjects) {
+  projectList.innerHTML = currentProjects
     .map(
-      (project, i) => `
-        <li data-index='${i}'>${project.title}</li>`
+      (projectItem, i) => `
+        <li data-index='${i}'>${projectItem.title}</li>`
     )
     .join('');
 }
 
 function showProject(e) {
-  if(e) {
-    const index = e.target.dataset.index;
+  if (e) {
+    const { index } = e.target.dataset;
     Observer.emit('assignCurrentProject', index);
   }
-  if(!currentProject) return;
+  if (!currentProject) return;
   project.classList.remove('hidden');
   projectTitle.textContent = currentProject.title;
   projectDescription.textContent = currentProject.description;
-  
+
   todos.innerHTML = currentProject.todos
     .sort((a, b) => (a[sortParam] < b[sortParam] ? -1 : 1))
     .map(
@@ -91,24 +93,25 @@ function sortDisplay(e) {
 function toggleProgress(e) {
   if (!e.target.matches('.progress')) return;
 
-  const index = e.target.dataset.index;
+  const { index } = e.target.dataset;
   currentProject.todos[index].toggleComplete();
 }
 
 function viewTodo(e) {
   if (!e.target.matches('.view')) return;
 
-  const index = e.target.dataset.index;
+  const { index } = e.target.dataset;
   showTodo(currentProject.todos[index]);
 }
 
 function deleteTodo(e) {
   if (!e.target.matches('.delete')) return;
 
-  const confirmation = confirm(`Do you really want to delete this Todo?`);
+  // eslint-disable-next-line no-restricted-globals
+  const confirmation = confirm('Do you really want to delete this Todo?');
   if (!confirmation) return;
 
-  const index = e.target.dataset.index;
+  const { index } = e.target.dataset;
   currentProject.removeTodo(index);
 }
 
@@ -122,7 +125,6 @@ function showRandomTodo() {
     <span class="material-icons">bolt</span>
     <span class="material-icons">bolt</span>
     <span class="material-icons">bolt</span>
-  `
-  const project = randomProject();
-  showTodo(project.randomTodo(), tagline);
+  `;
+  showTodo(randomProject().randomTodo(), tagline);
 }

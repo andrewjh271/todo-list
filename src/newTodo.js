@@ -25,7 +25,7 @@ function addTodo(e) {
     description: this.querySelector('[name=description]').value,
     dueDate: `${this.querySelector('[name=due-date]').value}T00:00:00`,
     priority: this.querySelector('[name=priority]').value,
-  })
+  });
   currentProject.addTodo(todo);
   this.reset();
   toggleTodoForm(e);

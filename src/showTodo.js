@@ -1,5 +1,9 @@
-
 const form = document.querySelector('.view-todo');
+
+function clear() {
+  form.classList.add('hidden');
+  form.innerHTML = '';
+}
 
 export default function display(todo, tagline) {
   clear();
@@ -10,7 +14,7 @@ export default function display(todo, tagline) {
   title.classList.add('form-line');
 
   const description = document.createElement('textarea');
-  description.placeholder = 'Description...'
+  description.placeholder = 'Description...';
   description.value = todo.description;
   description.classList.add('form-line');
 
@@ -42,7 +46,9 @@ export default function display(todo, tagline) {
   priority.add(option1);
   priority.add(option2);
   priority.add(option3);
-  priority.selectedIndex = ['low', 'medium', 'high'].findIndex(el => el === todo.priority);
+  priority.selectedIndex = ['low', 'medium', 'high'].findIndex(
+    (el) => el === todo.priority
+  );
   priorityContainer.appendChild(priorityLabel);
   priorityContainer.appendChild(priority);
 
@@ -60,14 +66,14 @@ export default function display(todo, tagline) {
 
   const buttonContainer = document.createElement('div');
   buttonContainer.classList.add('form-line');
-  
+
   const exit = document.createElement('button');
   exit.textContent = 'Exit';
-  
+
   const submit = document.createElement('input');
   submit.setAttribute('type', 'submit');
   submit.setAttribute('value', 'Submit');
-  
+
   buttonContainer.appendChild(isCompleteContainer);
   buttonContainer.appendChild(exit);
   buttonContainer.appendChild(submit);
@@ -91,15 +97,10 @@ export default function display(todo, tagline) {
       description: description.value,
       dueDate: `${dueDate.value}T00:00:00`,
       priority: priority.value,
-      isComplete: isComplete.checked
-     });
+      isComplete: isComplete.checked,
+    });
     clear();
-  })
+  });
 
   exit.addEventListener('click', clear);
-}
-
-function clear() {
-  form.classList.add('hidden');
-  form.innerHTML = ''
 }

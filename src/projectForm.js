@@ -10,7 +10,7 @@ editProjectButton.addEventListener('click', editProject);
 const form = document.querySelector('.project-form');
 const cancel = form.querySelector('.cancel-project');
 
-form.addEventListener('submit', addProject)
+form.addEventListener('submit', addProject);
 cancel.addEventListener('click', hide);
 
 function display() {
@@ -26,7 +26,7 @@ function addProject(e) {
   e.preventDefault();
   const project = new Project({
     title: this.querySelector('[name=title]').value,
-    description: this.querySelector('[name=description]').value
+    description: this.querySelector('[name=description]').value,
   });
   add(project);
   this.reset();
@@ -34,7 +34,7 @@ function addProject(e) {
 }
 
 function editProject() {
-  const editProject = document.querySelector('.edit-project-form')
+  const editProjectForm = document.querySelector('.edit-project-form');
 
   const header = document.createElement('h1');
   header.innerHTML = `Edit <i>${currentProject.title}</i>`;
@@ -43,9 +43,9 @@ function editProject() {
   title.setAttribute('type', 'text');
   title.value = currentProject.title;
   title.classList.add('form-line');
-  
+
   const description = document.createElement('textarea');
-  description.placeholder = 'Description...'
+  description.placeholder = 'Description...';
   description.value = currentProject.description;
   description.classList.add('form-line');
 
@@ -62,25 +62,25 @@ function editProject() {
   buttonContainer.appendChild(exit);
   buttonContainer.appendChild(submit);
 
-  editProject.append(header);
-  editProject.append(title);
-  editProject.append(description);
-  editProject.append(buttonContainer);
+  editProjectForm.append(header);
+  editProjectForm.append(title);
+  editProjectForm.append(description);
+  editProjectForm.append(buttonContainer);
 
-  editProject.classList.remove('hidden');
+  editProjectForm.classList.remove('hidden');
 
-  editProject.addEventListener('submit', (e) => {
+  editProjectForm.addEventListener('submit', (e) => {
     e.preventDefault();
     currentProject.update({
       title: title.value,
-      description: description.value
+      description: description.value,
     });
-    editProject.innerHTML = '';
-    editProject.classList.add('hidden');
-  })
+    editProjectForm.innerHTML = '';
+    editProjectForm.classList.add('hidden');
+  });
 
   exit.addEventListener('click', () => {
-    editProject.classList.add('hidden');
-    editProject.innerHTML = '';
-  })
+    editProjectForm.classList.add('hidden');
+    editProjectForm.innerHTML = '';
+  });
 }

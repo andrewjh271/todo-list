@@ -1,14 +1,15 @@
+import { add } from 'date-fns';
 import Project from './project';
 import Todo from './todo';
 import './DOMcontroller';
 import './localStorage';
 import * as ProjectsManager from './projectsManager';
-import * as Observer from './observer.js'
-import { add } from 'date-fns';
+import * as Observer from './observer';
 
 const storedProjects = localStorage.getItem('projects');
 if (storedProjects) {
   const projects = JSON.parse(storedProjects).map((project) => {
+    // eslint-disable-next-line no-param-reassign
     project.todos = project.todos.map((todo) => new Todo(todo));
     return new Project(project);
   });
@@ -18,18 +19,23 @@ if (storedProjects) {
 }
 
 function defaultProject() {
-  const project = new Project({ title: 'Welcome', description: 'Enjoy your todos!'});
+  const project = new Project({
+    title: 'Welcome',
+    description: 'Enjoy your todos!',
+  });
 
   const a = new Todo({
     title: 'Positive thinking',
-    description: 'Consider all the great things you\'ll accomplish with this Todo App',
+    description:
+      "Consider all the great things you'll accomplish with this Todo App",
     dueDate: add(Date.now(), { days: 1 }),
     priority: 'medium',
   });
 
   const b = new Todo({
     title: 'Positive action',
-    description: 'Enjoy the feeling of accomplishment as you check off this Todo',
+    description:
+      'Enjoy the feeling of accomplishment as you check off this Todo',
     dueDate: add(Date.now(), { days: 2 }),
     priority: 'high',
   });
