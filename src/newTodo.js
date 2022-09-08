@@ -8,7 +8,10 @@ const cancelTodo = document.querySelector('.cancel-todo');
 
 newTodoButton.addEventListener('click', toggleTodoForm);
 todoForm.addEventListener('submit', addTodo);
-cancelTodo.addEventListener('click', toggleTodoForm);
+cancelTodo.addEventListener('click', function cancel(e) {
+  this.closest('form').reset();
+  toggleTodoForm(e);
+});
 
 function toggleTodoForm(e) {
   e.preventDefault();
