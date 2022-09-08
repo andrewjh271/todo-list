@@ -11,6 +11,7 @@ export default function display(todo, tagline) {
   const title = document.createElement('input');
   title.setAttribute('type', 'text');
   title.setAttribute('value', todo.title);
+  title.required = true;
   title.classList.add('form-line');
 
   const description = document.createElement('textarea');
