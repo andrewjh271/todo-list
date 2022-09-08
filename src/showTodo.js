@@ -93,10 +93,13 @@ export default function display(todo, tagline) {
 
   form.addEventListener('submit', (e) => {
     e.preventDefault();
+
+    // add time to prevent time zone issues, only if value is provided
+    const updatedDate = dueDate.value ? `${dueDate.value}T00:00:00` : undefined;
     todo.update({
       title: title.value,
       description: description.value,
-      dueDate: `${dueDate.value}T00:00:00`,
+      dueDate: updatedDate,
       priority: priority.value,
       isComplete: isComplete.checked,
     });

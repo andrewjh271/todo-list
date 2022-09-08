@@ -1,13 +1,14 @@
-import { format } from 'date-fns';
+import { format, isValid } from 'date-fns';
 import * as Observer from './observer';
 
 export default class Todo {
   constructor(params) {
     this.title = params.title;
     this.description = params.description;
-    if (params.dueDate) this.dueDate = new Date(params.dueDate);
     this.priority = params.priority;
     this.isComplete = params.isComplete || false;
+    this.dueDate = params.dueDate ? new Date(params.dueDate) : undefined;
+    // new Date(null) = Wed Dec 31 1969, so need to assign undefined value when loading
   }
 
   toggleComplete() {
@@ -18,18 +19,19 @@ export default class Todo {
   update(params) {
     this.title = params.title;
     this.description = params.description;
-    if (params.dueDate) this.dueDate = new Date(params.dueDate);
     this.priority = params.priority;
     this.isComplete = params.isComplete;
+    this.dueDate = new Date(params.dueDate);
+
     Observer.emit('updateProject');
   }
 
   get dueDateFormatted() {
-    return this.dueDate ? format(this.dueDate, 'M/d/yy') : '';
+    return isValid(this.dueDate) ? format(this.dueDate, 'M/d/yy') : '';
   }
 
   get dueDateString() {
-    return this.dueDate ? format(this.dueDate, 'yyyy-MM-dd') : '';
+    return isValid(this.dueDate) ? format(this.dueDate, 'yyyy-MM-dd') : '';
   }
 
   get sortedTitle() {
@@ -37,7 +39,7 @@ export default class Todo {
   }
 
   get sortedDueDate() {
-    return this.dueDate ? this.dueDate : Infinity;
+    return isValid(this.dueDate) ? this.dueDate : Infinity;
   }
 
   get sortedPriority() {
