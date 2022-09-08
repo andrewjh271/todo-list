@@ -5,11 +5,10 @@ module.exports = {
   output: {
     filename: 'main.js',
     path: path.resolve(__dirname, 'dist'),
-    publicPath: "/dist/",
   },
   devServer: {
     watchContentBase: true,
   },
   mode: 'development',
-  devtool: 'source-map'
+  devtool: 'source-map',
 };
