@@ -3320,7 +3320,10 @@ const cancelTodo = document.querySelector('.cancel-todo');
 
 newTodoButton.addEventListener('click', toggleTodoForm);
 todoForm.addEventListener('submit', addTodo);
-cancelTodo.addEventListener('click', toggleTodoForm);
+cancelTodo.addEventListener('click', function cancel(e) {
+  this.closest('form').reset();
+  toggleTodoForm(e);
+});
 
 function toggleTodoForm(e) {
   e.preventDefault();
@@ -3644,6 +3647,7 @@ function display(todo, tagline) {
   const title = document.createElement('input');
   title.setAttribute('type', 'text');
   title.setAttribute('value', todo.title);
+  title.required = true;
   title.classList.add('form-line');
 
   const description = document.createElement('textarea');
@@ -3725,10 +3729,13 @@ function display(todo, tagline) {
 
   form.addEventListener('submit', (e) => {
     e.preventDefault();
+
+    // add time to prevent time zone issues, only if value is provided
+    const updatedDate = dueDate.value ? `${dueDate.value}T00:00:00` : undefined;
     todo.update({
       title: title.value,
       description: description.value,
-      dueDate: `${dueDate.value}T00:00:00`,
+      dueDate: updatedDate,
       priority: priority.value,
       isComplete: isComplete.checked,
     });
@@ -3751,7 +3758,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ Todo)
 /* harmony export */ });
-/* harmony import */ var date_fns__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! date-fns */ "./node_modules/date-fns/esm/format/index.js");
+/* harmony import */ var date_fns__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! date-fns */ "./node_modules/date-fns/esm/isValid/index.js");
+/* harmony import */ var date_fns__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! date-fns */ "./node_modules/date-fns/esm/format/index.js");
 /* harmony import */ var _observer__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./observer */ "./src/observer.js");
 
 
@@ -3760,9 +3768,10 @@ class Todo {
   constructor(params) {
     this.title = params.title;
     this.description = params.description;
-    if (params.dueDate) this.dueDate = new Date(params.dueDate);
     this.priority = params.priority;
     this.isComplete = params.isComplete || false;
+    this.dueDate = params.dueDate ? new Date(params.dueDate) : undefined;
+    // new Date(null) = Wed Dec 31 1969, so need to assign undefined value when loading
   }
 
   toggleComplete() {
@@ -3773,18 +3782,19 @@ class Todo {
   update(params) {
     this.title = params.title;
     this.description = params.description;
-    if (params.dueDate) this.dueDate = new Date(params.dueDate);
     this.priority = params.priority;
     this.isComplete = params.isComplete;
+    this.dueDate = new Date(params.dueDate);
+
     _observer__WEBPACK_IMPORTED_MODULE_0__.emit('updateProject');
   }
 
   get dueDateFormatted() {
-    return this.dueDate ? (0,date_fns__WEBPACK_IMPORTED_MODULE_1__.default)(this.dueDate, 'M/d/yy') : '';
+    return (0,date_fns__WEBPACK_IMPORTED_MODULE_1__.default)(this.dueDate) ? (0,date_fns__WEBPACK_IMPORTED_MODULE_2__.default)(this.dueDate, 'M/d/yy') : '';
   }
 
   get dueDateString() {
-    return this.dueDate ? (0,date_fns__WEBPACK_IMPORTED_MODULE_1__.default)(this.dueDate, 'yyyy-MM-dd') : '';
+    return (0,date_fns__WEBPACK_IMPORTED_MODULE_1__.default)(this.dueDate) ? (0,date_fns__WEBPACK_IMPORTED_MODULE_2__.default)(this.dueDate, 'yyyy-MM-dd') : '';
   }
 
   get sortedTitle() {
@@ -3792,7 +3802,7 @@ class Todo {
   }
 
   get sortedDueDate() {
-    return this.dueDate ? this.dueDate : Infinity;
+    return (0,date_fns__WEBPACK_IMPORTED_MODULE_1__.default)(this.dueDate) ? this.dueDate : Infinity;
   }
 
   get sortedPriority() {
