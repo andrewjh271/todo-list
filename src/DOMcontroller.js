@@ -51,7 +51,7 @@ function updateProjects(currentProjects) {
 }
 
 function showProject(e) {
-  if (e) {
+  if (e && e.target.dataset.index) {
     const { index } = e.target.dataset;
     Observer.emit('assignCurrentProject', index);
   }
