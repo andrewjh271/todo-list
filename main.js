@@ -3165,6 +3165,11 @@ const headings = todoTable.querySelectorAll('th');
 
 const randomTodo = document.querySelector('.random-todo');
 
+projects.addEventListener('click', () => {
+  _observer__WEBPACK_IMPORTED_MODULE_0__.emit('assignCurrentProject');
+  project.classList.add('hidden-project');
+});
+
 projectList.addEventListener('click', showProject);
 toggleProjects.addEventListener('click', toggleSidebar);
 headings.forEach((heading) => heading.addEventListener('click', sortDisplay));
@@ -3195,6 +3200,7 @@ function updateProjects(currentProjects) {
 }
 
 function showProject(e) {
+  e?.stopPropagation();
   if (e && e.target.dataset.index) {
     const { index } = e.target.dataset;
     _observer__WEBPACK_IMPORTED_MODULE_0__.emit('assignCurrentProject', index);
