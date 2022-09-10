@@ -3200,10 +3200,10 @@ function showProject(e) {
     _observer__WEBPACK_IMPORTED_MODULE_0__.emit('assignCurrentProject', index);
   }
   if (!_projectsManager__WEBPACK_IMPORTED_MODULE_2__.currentProject) {
-    project.classList.add('hidden');
+    project.classList.add('hidden-project');
     return;
   }
-  project.classList.remove('hidden');
+  project.classList.remove('hidden-project');
   projectTitle.textContent = _projectsManager__WEBPACK_IMPORTED_MODULE_2__.currentProject.title;
   projectDescription.textContent = _projectsManager__WEBPACK_IMPORTED_MODULE_2__.currentProject.description;
 
@@ -3565,6 +3565,7 @@ function editProject() {
 
   const exit = document.createElement('button');
   exit.textContent = 'Exit';
+  exit.classList.add('text-button');
 
   const submit = document.createElement('input');
   submit.setAttribute('type', 'submit');
@@ -3758,6 +3759,7 @@ function display(todo, tagline) {
 
   const exit = document.createElement('button');
   exit.textContent = 'Exit';
+  exit.classList.add('text-button');
 
   const submit = document.createElement('input');
   submit.setAttribute('type', 'submit');
