@@ -20,4 +20,3 @@ if (storedProjects) {
 
 const index = localStorage.getItem('currentProjectIndex') || 0;
 Observer.emit('assignCurrentProject', index);
-Observer.emit('updateProject');

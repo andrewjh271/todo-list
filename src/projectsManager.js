@@ -9,11 +9,12 @@ Observer.on('updateProject', update);
 
 function assignCurrentProject(index) {
   currentProject = projects[index];
+  Observer.emit('updateProject');
 }
 
 function add(project) {
   projects.push(project);
-  Observer.emit('updateProjects', projects);
+  Observer.emit('assignCurrentProject', projects.length - 1);
 }
 
 function remove(index) {

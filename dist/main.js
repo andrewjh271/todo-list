@@ -3524,6 +3524,9 @@ newProjectButton.addEventListener('click', display);
 editProjectButton.addEventListener('click', editProject);
 deleteProjectButton.addEventListener('click', deleteProject);
 
+const banner = document.querySelector('.banner');
+banner.addEventListener('click', (e) => e.stopPropagation());
+
 const form = document.querySelector('.project-form');
 const cancel = form.querySelector('.cancel-project');
 
@@ -3641,11 +3644,12 @@ _observer__WEBPACK_IMPORTED_MODULE_0__.on('updateProject', update);
 
 function assignCurrentProject(index) {
   currentProject = projects[index];
+  _observer__WEBPACK_IMPORTED_MODULE_0__.emit('updateProject');
 }
 
 function add(project) {
   projects.push(project);
-  _observer__WEBPACK_IMPORTED_MODULE_0__.emit('updateProjects', projects);
+  _observer__WEBPACK_IMPORTED_MODULE_0__.emit('assignCurrentProject', projects.length - 1);
 }
 
 function remove(index) {
@@ -3972,7 +3976,6 @@ if (storedProjects) {
 
 const index = localStorage.getItem('currentProjectIndex') || 0;
 _observer__WEBPACK_IMPORTED_MODULE_5__.emit('assignCurrentProject', index);
-_observer__WEBPACK_IMPORTED_MODULE_5__.emit('updateProject');
 
 })();
 
