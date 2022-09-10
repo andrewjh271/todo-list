@@ -3542,6 +3542,7 @@ function display() {
 function hide(e) {
   e.preventDefault();
   form.classList.add('hidden');
+  form.reset();
 }
 
 function addProject(e) {
