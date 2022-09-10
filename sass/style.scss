@@ -127,6 +127,15 @@ header {
       cursor: pointer;
     }
   }
+
+  .current-project {
+    color: #3b6699;
+    text-shadow: 4px 2px 3px #45c0ff33;
+
+    &:hover {
+      text-shadow: none;
+    }
+  }
 }
 
 // project view

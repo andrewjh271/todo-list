@@ -48,10 +48,12 @@ function toggleSidebar() {
 
 function updateProjects(currentProjects) {
   projectList.innerHTML = currentProjects
-    .map(
-      (projectItem, i) => `
-        <li data-index='${i}'>${projectItem.title}</li>`
-    )
+    .map((projectItem, i) => {
+        if (projectItem === currentProject) {
+          return `<li class='current-project' data-index='${i}'>${projectItem.title}</li>`;
+        }
+        return `<li data-index='${i}'>${projectItem.title}</li>`;
+      })
     .join('');
 }
 
