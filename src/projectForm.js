@@ -9,9 +9,6 @@ newProjectButton.addEventListener('click', display);
 editProjectButton.addEventListener('click', editProject);
 deleteProjectButton.addEventListener('click', deleteProject);
 
-const banner = document.querySelector('.banner');
-banner.addEventListener('click', (e) => e.stopPropagation());
-
 const form = document.querySelector('.project-form');
 const cancel = form.querySelector('.cancel-project');
 

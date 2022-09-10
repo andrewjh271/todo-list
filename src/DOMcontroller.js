@@ -21,12 +21,7 @@ const headings = todoTable.querySelectorAll('th');
 
 const randomTodo = document.querySelector('.random-todo');
 
-projects.addEventListener('click', () => {
-  Observer.emit('assignCurrentProject');
-  project.classList.add('hidden-project');
-});
-
-projectList.addEventListener('click', showProject);
+projects.addEventListener('click', assignCurrentProject);
 toggleProjects.addEventListener('click', toggleSidebar);
 headings.forEach((heading) => heading.addEventListener('click', sortDisplay));
 
@@ -35,8 +30,6 @@ todos.addEventListener('click', viewTodo);
 todos.addEventListener('click', deleteTodo);
 
 randomTodo.addEventListener('click', showRandomTodo);
-
-let sortParam;
 
 Observer.on('updateProjects', updateProjects);
 Observer.on('updateProject', showProject);
@@ -57,12 +50,17 @@ function updateProjects(currentProjects) {
     .join('');
 }
 
-function showProject(e) {
-  e?.stopPropagation();
-  if (e && e.target.dataset.index) {
+function assignCurrentProject(e) {
+  if (e.target.tagName === 'LI') {
     const { index } = e.target.dataset;
     Observer.emit('assignCurrentProject', index);
+  } else if (e.target.tagName === 'ASIDE') {
+    // hide project if clicked outside of an element in sidebar
+    Observer.emit('assignCurrentProject');
   }
+}
+
+function showProject() {
   if (!currentProject) {
     project.classList.add('hidden-project');
     return;
@@ -72,7 +70,6 @@ function showProject(e) {
   projectDescription.textContent = currentProject.description;
 
   todos.innerHTML = currentProject.todos
-    .sort((a, b) => (a[sortParam] < b[sortParam] ? -1 : 1))
     .map(
       (todo, i) => `
       <tr class='${todo.isComplete ? 'complete' : todo.priority}'>
@@ -91,13 +88,20 @@ function showProject(e) {
       <td><button class='view' data-index='${i}'><span class="material-icons">zoom_in</span></button></td>
       <td><button class='delete' data-index='${i}'><span class="material-icons">delete_forever</span></button></td>
       </tr>`
-    )
+      )
     .join('');
 }
 
+let sortParam;
+let direction = -1;
 function sortDisplay(e) {
-  sortParam = e.target.dataset.name;
-  showProject();
+  if (sortParam === e.target.dataset.name) {
+    direction = -direction;
+  } else {
+    sortParam = e.target.dataset.name;
+    direction = -1;
+  }
+  currentProject.sort(sortParam, direction);
 }
 
 function toggleProgress(e) {

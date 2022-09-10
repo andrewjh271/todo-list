@@ -24,6 +24,12 @@ export default class Project {
     emit('updateProject');
   }
 
+  sort(sortParam, direction) {
+    this.todos.sort((a, b) => (
+      a[sortParam] < b[sortParam] ? direction : -direction));
+    emit('updateProject');
+  }
+
   randomTodo() {
     if (this.todos.length === 0) {
       return new Todo({

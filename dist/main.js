@@ -3165,12 +3165,7 @@ const headings = todoTable.querySelectorAll('th');
 
 const randomTodo = document.querySelector('.random-todo');
 
-projects.addEventListener('click', () => {
-  _observer__WEBPACK_IMPORTED_MODULE_0__.emit('assignCurrentProject');
-  project.classList.add('hidden-project');
-});
-
-projectList.addEventListener('click', showProject);
+projects.addEventListener('click', assignCurrentProject);
 toggleProjects.addEventListener('click', toggleSidebar);
 headings.forEach((heading) => heading.addEventListener('click', sortDisplay));
 
@@ -3179,8 +3174,6 @@ todos.addEventListener('click', viewTodo);
 todos.addEventListener('click', deleteTodo);
 
 randomTodo.addEventListener('click', showRandomTodo);
-
-let sortParam;
 
 _observer__WEBPACK_IMPORTED_MODULE_0__.on('updateProjects', updateProjects);
 _observer__WEBPACK_IMPORTED_MODULE_0__.on('updateProject', showProject);
@@ -3201,12 +3194,17 @@ function updateProjects(currentProjects) {
     .join('');
 }
 
-function showProject(e) {
-  e?.stopPropagation();
-  if (e && e.target.dataset.index) {
+function assignCurrentProject(e) {
+  if (e.target.tagName === 'LI') {
     const { index } = e.target.dataset;
     _observer__WEBPACK_IMPORTED_MODULE_0__.emit('assignCurrentProject', index);
+  } else if (e.target.tagName === 'ASIDE') {
+    // hide project if clicked outside of an element in sidebar
+    _observer__WEBPACK_IMPORTED_MODULE_0__.emit('assignCurrentProject');
   }
+}
+
+function showProject() {
   if (!_projectsManager__WEBPACK_IMPORTED_MODULE_2__.currentProject) {
     project.classList.add('hidden-project');
     return;
@@ -3215,8 +3213,7 @@ function showProject(e) {
   projectTitle.textContent = _projectsManager__WEBPACK_IMPORTED_MODULE_2__.currentProject.title;
   projectDescription.textContent = _projectsManager__WEBPACK_IMPORTED_MODULE_2__.currentProject.description;
 
-  todos.innerHTML = _projectsManager__WEBPACK_IMPORTED_MODULE_2__.currentProject.todos.sort((a, b) => (a[sortParam] < b[sortParam] ? -1 : 1))
-    .map(
+  todos.innerHTML = _projectsManager__WEBPACK_IMPORTED_MODULE_2__.currentProject.todos.map(
       (todo, i) => `
       <tr class='${todo.isComplete ? 'complete' : todo.priority}'>
       <td>${todo.title}</td>
@@ -3234,13 +3231,20 @@ function showProject(e) {
       <td><button class='view' data-index='${i}'><span class="material-icons">zoom_in</span></button></td>
       <td><button class='delete' data-index='${i}'><span class="material-icons">delete_forever</span></button></td>
       </tr>`
-    )
+      )
     .join('');
 }
 
+let sortParam;
+let direction = -1;
 function sortDisplay(e) {
-  sortParam = e.target.dataset.name;
-  showProject();
+  if (sortParam === e.target.dataset.name) {
+    direction = -direction;
+  } else {
+    sortParam = e.target.dataset.name;
+    direction = -1;
+  }
+  _projectsManager__WEBPACK_IMPORTED_MODULE_2__.currentProject.sort(sortParam, direction);
 }
 
 function toggleProgress(e) {
@@ -3489,6 +3493,12 @@ class Project {
     (0,_observer__WEBPACK_IMPORTED_MODULE_0__.emit)('updateProject');
   }
 
+  sort(sortParam, direction) {
+    this.todos.sort((a, b) => (
+      a[sortParam] < b[sortParam] ? direction : -direction));
+    (0,_observer__WEBPACK_IMPORTED_MODULE_0__.emit)('updateProject');
+  }
+
   randomTodo() {
     if (this.todos.length === 0) {
       return new _todo__WEBPACK_IMPORTED_MODULE_1__.default({
@@ -3525,9 +3535,6 @@ const deleteProjectButton = document.querySelector('.delete-project-button');
 newProjectButton.addEventListener('click', display);
 editProjectButton.addEventListener('click', editProject);
 deleteProjectButton.addEventListener('click', deleteProject);
-
-const banner = document.querySelector('.banner');
-banner.addEventListener('click', (e) => e.stopPropagation());
 
 const form = document.querySelector('.project-form');
 const cancel = form.querySelector('.cancel-project');
