@@ -70,6 +70,7 @@ export default function display(todo, tagline) {
 
   const exit = document.createElement('button');
   exit.textContent = 'Exit';
+  exit.classList.add('text-button');
 
   const submit = document.createElement('input');
   submit.setAttribute('type', 'submit');

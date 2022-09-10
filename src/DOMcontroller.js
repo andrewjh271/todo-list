@@ -56,10 +56,10 @@ function showProject(e) {
     Observer.emit('assignCurrentProject', index);
   }
   if (!currentProject) {
-    project.classList.add('hidden');
+    project.classList.add('hidden-project');
     return;
   }
-  project.classList.remove('hidden');
+  project.classList.remove('hidden-project');
   projectTitle.textContent = currentProject.title;
   projectDescription.textContent = currentProject.description;
 
