@@ -21,6 +21,11 @@ const headings = todoTable.querySelectorAll('th');
 
 const randomTodo = document.querySelector('.random-todo');
 
+projects.addEventListener('click', () => {
+  Observer.emit('assignCurrentProject');
+  project.classList.add('hidden-project');
+});
+
 projectList.addEventListener('click', showProject);
 toggleProjects.addEventListener('click', toggleSidebar);
 headings.forEach((heading) => heading.addEventListener('click', sortDisplay));
@@ -51,6 +56,7 @@ function updateProjects(currentProjects) {
 }
 
 function showProject(e) {
+  e?.stopPropagation();
   if (e && e.target.dataset.index) {
     const { index } = e.target.dataset;
     Observer.emit('assignCurrentProject', index);
