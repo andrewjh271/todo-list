@@ -3195,7 +3195,7 @@ function updateProjects(currentProjects) {
 }
 
 function showProject(e) {
-  if (e) {
+  if (e && e.target.dataset.index) {
     const { index } = e.target.dataset;
     _observer__WEBPACK_IMPORTED_MODULE_0__.emit('assignCurrentProject', index);
   }
@@ -3272,6 +3272,59 @@ function showRandomTodo() {
     <span class="material-icons">bolt</span>
   `;
   (0,_showTodo__WEBPACK_IMPORTED_MODULE_1__.default)((0,_projectsManager__WEBPACK_IMPORTED_MODULE_2__.randomProject)().randomTodo(), tagline);
+}
+
+
+/***/ }),
+
+/***/ "./src/defaultProject.js":
+/*!*******************************!*\
+  !*** ./src/defaultProject.js ***!
+  \*******************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ defaultProject)
+/* harmony export */ });
+/* harmony import */ var date_fns__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! date-fns */ "./node_modules/date-fns/esm/add/index.js");
+/* harmony import */ var _project__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./project */ "./src/project.js");
+/* harmony import */ var _todo__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./todo */ "./src/todo.js");
+
+
+
+
+function defaultProject() {
+  const project = new _project__WEBPACK_IMPORTED_MODULE_0__.default({
+    title: 'Welcome',
+    description: 'Enjoy your todos!',
+  });
+
+  const a = new _todo__WEBPACK_IMPORTED_MODULE_1__.default({
+    title: 'Positive thinking',
+    description:
+      "Consider all the great things you'll accomplish with this Todo App",
+    dueDate: (0,date_fns__WEBPACK_IMPORTED_MODULE_2__.default)(Date.now(), { days: 1 }),
+    priority: 'medium',
+  });
+
+  const b = new _todo__WEBPACK_IMPORTED_MODULE_1__.default({
+    title: 'Positive action',
+    description:
+      'Enjoy the feeling of accomplishment as you check off this Todo',
+    dueDate: (0,date_fns__WEBPACK_IMPORTED_MODULE_2__.default)(Date.now(), { days: 2 }),
+    priority: 'high',
+  });
+
+  const c = new _todo__WEBPACK_IMPORTED_MODULE_1__.default({
+    title: 'Positive presence',
+    description: 'Remember that the real Todo is the journey',
+    dueDate: (0,date_fns__WEBPACK_IMPORTED_MODULE_2__.default)(Date.now(), { days: 3 }),
+    priority: 'low',
+  });
+
+  [a, b, c].forEach((todo) => project.addTodo(todo));
+  return project;
 }
 
 
@@ -3409,23 +3462,23 @@ class Project {
   constructor(params) {
     this.title = params.title;
     this.description = params.description;
-    this.todos = params.todos ? params.todos : [];
+    this.todos = params.todos || [];
   }
 
   addTodo(todo) {
     this.todos.push(todo);
-    _observer__WEBPACK_IMPORTED_MODULE_0__.emit('updateProject');
+    (0,_observer__WEBPACK_IMPORTED_MODULE_0__.emit)('updateProject');
   }
 
   removeTodo(index) {
     this.todos.splice(index, 1);
-    _observer__WEBPACK_IMPORTED_MODULE_0__.emit('updateProject');
+    (0,_observer__WEBPACK_IMPORTED_MODULE_0__.emit)('updateProject');
   }
 
   update(params) {
     this.title = params.title;
     this.description = params.description;
-    _observer__WEBPACK_IMPORTED_MODULE_0__.emit('updateProject');
+    (0,_observer__WEBPACK_IMPORTED_MODULE_0__.emit)('updateProject');
   }
 
   randomTodo() {
@@ -3612,7 +3665,6 @@ function deleteCurrentProject() {
     if (projects[i] === currentProject) {
       projects.splice(i, 1);
       currentProject = null;
-      _observer__WEBPACK_IMPORTED_MODULE_0__.emit('updateProjects', projects);
       _observer__WEBPACK_IMPORTED_MODULE_0__.emit('updateProject');
       return;
     }
@@ -3883,13 +3935,13 @@ var __webpack_exports__ = {};
   !*** ./src/index.js ***!
   \**********************/
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var date_fns__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! date-fns */ "./node_modules/date-fns/esm/add/index.js");
 /* harmony import */ var _project__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./project */ "./src/project.js");
 /* harmony import */ var _todo__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./todo */ "./src/todo.js");
 /* harmony import */ var _DOMcontroller__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./DOMcontroller */ "./src/DOMcontroller.js");
 /* harmony import */ var _localStorage__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./localStorage */ "./src/localStorage.js");
 /* harmony import */ var _projectsManager__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./projectsManager */ "./src/projectsManager.js");
 /* harmony import */ var _observer__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./observer */ "./src/observer.js");
+/* harmony import */ var _defaultProject__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./defaultProject */ "./src/defaultProject.js");
 
 
 
@@ -3907,40 +3959,7 @@ if (storedProjects) {
   });
   _projectsManager__WEBPACK_IMPORTED_MODULE_4__.load(projects);
 } else {
-  _projectsManager__WEBPACK_IMPORTED_MODULE_4__.add(defaultProject());
-}
-
-function defaultProject() {
-  const project = new _project__WEBPACK_IMPORTED_MODULE_0__.default({
-    title: 'Welcome',
-    description: 'Enjoy your todos!',
-  });
-
-  const a = new _todo__WEBPACK_IMPORTED_MODULE_1__.default({
-    title: 'Positive thinking',
-    description:
-      "Consider all the great things you'll accomplish with this Todo App",
-    dueDate: (0,date_fns__WEBPACK_IMPORTED_MODULE_6__.default)(Date.now(), { days: 1 }),
-    priority: 'medium',
-  });
-
-  const b = new _todo__WEBPACK_IMPORTED_MODULE_1__.default({
-    title: 'Positive action',
-    description:
-      'Enjoy the feeling of accomplishment as you check off this Todo',
-    dueDate: (0,date_fns__WEBPACK_IMPORTED_MODULE_6__.default)(Date.now(), { days: 2 }),
-    priority: 'high',
-  });
-
-  const c = new _todo__WEBPACK_IMPORTED_MODULE_1__.default({
-    title: 'Positive presence',
-    description: 'Remember that the real Todo is the journey',
-    dueDate: (0,date_fns__WEBPACK_IMPORTED_MODULE_6__.default)(Date.now(), { days: 3 }),
-    priority: 'low',
-  });
-
-  [a, b, c].forEach((todo) => project.addTodo(todo));
-  return project;
+  _projectsManager__WEBPACK_IMPORTED_MODULE_4__.add((0,_defaultProject__WEBPACK_IMPORTED_MODULE_6__.default)());
 }
 
 const index = localStorage.getItem('currentProjectIndex') || 0;

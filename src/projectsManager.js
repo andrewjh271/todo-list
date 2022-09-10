@@ -40,7 +40,6 @@ function deleteCurrentProject() {
     if (projects[i] === currentProject) {
       projects.splice(i, 1);
       currentProject = null;
-      Observer.emit('updateProjects', projects);
       Observer.emit('updateProject');
       return;
     }
