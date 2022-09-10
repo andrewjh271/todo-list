@@ -3192,10 +3192,12 @@ function toggleSidebar() {
 
 function updateProjects(currentProjects) {
   projectList.innerHTML = currentProjects
-    .map(
-      (projectItem, i) => `
-        <li data-index='${i}'>${projectItem.title}</li>`
-    )
+    .map((projectItem, i) => {
+        if (projectItem === _projectsManager__WEBPACK_IMPORTED_MODULE_2__.currentProject) {
+          return `<li class='current-project' data-index='${i}'>${projectItem.title}</li>`;
+        }
+        return `<li data-index='${i}'>${projectItem.title}</li>`;
+      })
     .join('');
 }
 
