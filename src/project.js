@@ -38,8 +38,8 @@ export default class Project {
   randomTodo() {
     if (this.todos.length === 0) {
       return new Todo({
-        title: 'Create a Todo for this Project!',
-        description: `${this.title} isn't much of a project without any Todos...`,
+        title: `Create a Todo for ${this.title}!`,
+        description: 'It\'s not much of a project without any Todos...',
         dueDate: Date.now(),
         priority: 'high',
       });

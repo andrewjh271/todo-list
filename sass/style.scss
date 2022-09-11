@@ -228,6 +228,16 @@ input[type='submit'],
   }
 }
 
+input[type='submit']:disabled {
+  cursor: default;
+  color: #1010104d;
+
+  &:hover {
+    color: #1010104d;
+    background-color: #9dbff1;
+  }
+}
+
 // forms and inputs
 
 form h1 {

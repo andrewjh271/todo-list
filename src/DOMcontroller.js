@@ -139,7 +139,7 @@ function showRandomTodo() {
     <span class="material-icons">bolt</span>
     <span class="material-icons">bolt</span>
     <span class="material-icons">bolt</span>
-    <i>Random Todo Mode!</i>
+    <i>Random Todo!</i>
     <span class="material-icons">bolt</span>
     <span class="material-icons">bolt</span>
     <span class="material-icons">bolt</span>

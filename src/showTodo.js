@@ -92,6 +92,10 @@ export default function display(todo, tagline) {
 
   form.classList.remove('hidden');
 
+  if (todo.description.includes('It\'s not much of a project without any Todos...')) {
+    submit.setAttribute('disabled', '');
+  }
+
   form.addEventListener('submit', (e) => {
     e.preventDefault();
 
