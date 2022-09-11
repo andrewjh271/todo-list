@@ -3285,7 +3285,7 @@ function showRandomTodo() {
     <span class="material-icons">bolt</span>
     <span class="material-icons">bolt</span>
     <span class="material-icons">bolt</span>
-    <i>Random Todo Mode!</i>
+    <i>Random Todo!</i>
     <span class="material-icons">bolt</span>
     <span class="material-icons">bolt</span>
     <span class="material-icons">bolt</span>
@@ -3531,8 +3531,8 @@ class Project {
   randomTodo() {
     if (this.todos.length === 0) {
       return new _todo__WEBPACK_IMPORTED_MODULE_1__.default({
-        title: 'Create a Todo for this Project!',
-        description: `${this.title} isn't much of a project without any Todos...`,
+        title: `Create a Todo for ${this.title}!`,
+        description: 'It\'s not much of a project without any Todos...',
         dueDate: Date.now(),
         priority: 'high',
       });
@@ -3830,6 +3830,10 @@ function display(todo, tagline) {
   form.appendChild(buttonContainer);
 
   form.classList.remove('hidden');
+
+  if (todo.description.includes('It\'s not much of a project without any Todos...')) {
+    submit.setAttribute('disabled', '');
+  }
 
   form.addEventListener('submit', (e) => {
     e.preventDefault();

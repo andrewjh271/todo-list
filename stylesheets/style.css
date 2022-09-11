@@ -202,6 +202,15 @@ input[type=submit]:hover,
   transform: none;
 }
 
+input[type=submit]:disabled {
+  cursor: default;
+  color: #1010104d;
+}
+input[type=submit]:disabled:hover {
+  color: #1010104d;
+  background-color: #9dbff1;
+}
+
 form h1 {
   margin: 15px 0;
   width: 400px;
