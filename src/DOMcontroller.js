@@ -101,14 +101,10 @@ function showProject() {
 }
 
 let sortParam;
-let direction = -1;
+let direction;
 function sortDisplay(e) {
-  if (sortParam === e.target.dataset.name) {
-    direction = -direction;
-  } else {
-    sortParam = e.target.dataset.name;
-    direction = -1;
-  }
+  sortParam = e.target.dataset.name;
+  direction = -(currentProject.currentDirection(sortParam));
   currentProject.sort(sortParam, direction);
 }
 

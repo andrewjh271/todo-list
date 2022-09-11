@@ -30,6 +30,11 @@ export default class Project {
     emit('updateProject');
   }
 
+  currentDirection(sortParam) {
+    if (this.todos.length === 0) return 1;
+    return (this.todos[0][sortParam] > this.todos[this.todos.length - 1][sortParam]) ? 1 : -1;
+  }
+
   randomTodo() {
     if (this.todos.length === 0) {
       return new Todo({

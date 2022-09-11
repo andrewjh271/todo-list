@@ -3247,14 +3247,10 @@ function showProject() {
 }
 
 let sortParam;
-let direction = -1;
+let direction;
 function sortDisplay(e) {
-  if (sortParam === e.target.dataset.name) {
-    direction = -direction;
-  } else {
-    sortParam = e.target.dataset.name;
-    direction = -1;
-  }
+  sortParam = e.target.dataset.name;
+  direction = -(_projectsManager__WEBPACK_IMPORTED_MODULE_2__.currentProject.currentDirection(sortParam));
   _projectsManager__WEBPACK_IMPORTED_MODULE_2__.currentProject.sort(sortParam, direction);
 }
 
@@ -3525,6 +3521,11 @@ class Project {
     this.todos.sort((a, b) => (
       a[sortParam] < b[sortParam] ? direction : -direction));
     (0,_observer__WEBPACK_IMPORTED_MODULE_0__.emit)('updateProject');
+  }
+
+  currentDirection(sortParam) {
+    if (this.todos.length === 0) return 1;
+    return (this.todos[0][sortParam] > this.todos[this.todos.length - 1][sortParam]) ? 1 : -1;
   }
 
   randomTodo() {
