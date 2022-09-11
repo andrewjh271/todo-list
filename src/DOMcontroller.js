@@ -33,6 +33,10 @@ randomTodo.addEventListener('click', showRandomTodo);
 
 Observer.on('updateProjects', updateProjects);
 Observer.on('updateProject', showProject);
+Observer.on('updateProject', () => {
+  // prevent animated opacity when displaying changes to current project
+  project.classList.add('project-no-animation');
+});
 
 function toggleSidebar() {
   projects.classList.toggle('active');
@@ -58,38 +62,42 @@ function assignCurrentProject(e) {
     // hide project if clicked outside of an element in sidebar
     Observer.emit('assignCurrentProject');
   }
+  // reenable animated opacity
+  project.classList.remove('project-no-animation');
 }
 
 function showProject() {
+  project.classList.add('hidden-project');
   if (!currentProject) {
-    project.classList.add('hidden-project');
     return;
   }
-  project.classList.remove('hidden-project');
-  projectTitle.textContent = currentProject.title;
-  projectDescription.textContent = currentProject.description;
+  setTimeout(() => {
+    projectTitle.textContent = currentProject.title;
+    projectDescription.textContent = currentProject.description;
 
-  todos.innerHTML = currentProject.todos
-    .map(
-      (todo, i) => `
-      <tr class='${todo.isComplete ? 'complete' : todo.priority}'>
-      <td>${todo.title}</td>
-      <td>${todo.dueDateFormatted}</td>
-      <td>${todo.priority}</td>
-      <td>
-        <button class='progress' data-index='${i}'>
-          ${
-            todo.isComplete
-              ? "<span class='material-icons'>task_alt</span>"
-              : "<span class='material-icons'>remove_circle_outline</span>"
-          }
-        </button>
-      </td>
-      <td><button class='view' data-index='${i}'><span class="material-icons">zoom_in</span></button></td>
-      <td><button class='delete' data-index='${i}'><span class="material-icons">delete_forever</span></button></td>
-      </tr>`
-      )
-    .join('');
+    todos.innerHTML = currentProject.todos
+      .map(
+        (todo, i) => `
+        <tr class='${todo.isComplete ? 'complete' : todo.priority}'>
+        <td>${todo.title}</td>
+        <td>${todo.dueDateFormatted}</td>
+        <td>${todo.priority}</td>
+        <td>
+          <button class='progress' data-index='${i}'>
+            ${
+              todo.isComplete
+                ? "<span class='material-icons'>task_alt</span>"
+                : "<span class='material-icons'>remove_circle_outline</span>"
+            }
+          </button>
+        </td>
+        <td><button class='view' data-index='${i}'><span class="material-icons">zoom_in</span></button></td>
+        <td><button class='delete' data-index='${i}'><span class="material-icons">delete_forever</span></button></td>
+        </tr>`
+        )
+      .join('');
+      project.classList.remove('hidden-project');
+  }, 200);
 }
 
 let sortParam;
@@ -141,4 +149,21 @@ function showRandomTodo() {
     <span class="material-icons">bolt</span>
   `;
   showTodo(randomProject().randomTodo(), tagline);
+}
+
+export default function pageLoad() {
+  setTimeout(() => {
+    const header = document.querySelector('header');
+    project.classList.remove('page-load-transition');
+    projects.classList.remove('page-load-transition');
+    header.classList.remove('page-load-transition');
+  }, 2000);
+
+  if (!currentProject) {
+    // avoids disappear animation causing flash of hidden project
+    project.classList.add('page-load-hidden');
+    setTimeout(() => {
+      project.classList.remove('page-load-hidden');
+    }, 3000);
+  }
 }

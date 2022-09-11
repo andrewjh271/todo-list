@@ -3137,6 +3137,9 @@ function toDate(argument) {
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ pageLoad)
+/* harmony export */ });
 /* harmony import */ var _observer__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./observer */ "./src/observer.js");
 /* harmony import */ var _showTodo__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./showTodo */ "./src/showTodo.js");
 /* harmony import */ var _projectsManager__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./projectsManager */ "./src/projectsManager.js");
@@ -3177,6 +3180,10 @@ randomTodo.addEventListener('click', showRandomTodo);
 
 _observer__WEBPACK_IMPORTED_MODULE_0__.on('updateProjects', updateProjects);
 _observer__WEBPACK_IMPORTED_MODULE_0__.on('updateProject', showProject);
+_observer__WEBPACK_IMPORTED_MODULE_0__.on('updateProject', () => {
+  // prevent animated opacity when displaying changes to current project
+  project.classList.add('project-no-animation');
+});
 
 function toggleSidebar() {
   projects.classList.toggle('active');
@@ -3202,37 +3209,41 @@ function assignCurrentProject(e) {
     // hide project if clicked outside of an element in sidebar
     _observer__WEBPACK_IMPORTED_MODULE_0__.emit('assignCurrentProject');
   }
+  // reenable animated opacity
+  project.classList.remove('project-no-animation');
 }
 
 function showProject() {
+  project.classList.add('hidden-project');
   if (!_projectsManager__WEBPACK_IMPORTED_MODULE_2__.currentProject) {
-    project.classList.add('hidden-project');
     return;
   }
-  project.classList.remove('hidden-project');
-  projectTitle.textContent = _projectsManager__WEBPACK_IMPORTED_MODULE_2__.currentProject.title;
-  projectDescription.textContent = _projectsManager__WEBPACK_IMPORTED_MODULE_2__.currentProject.description;
+  setTimeout(() => {
+    projectTitle.textContent = _projectsManager__WEBPACK_IMPORTED_MODULE_2__.currentProject.title;
+    projectDescription.textContent = _projectsManager__WEBPACK_IMPORTED_MODULE_2__.currentProject.description;
 
-  todos.innerHTML = _projectsManager__WEBPACK_IMPORTED_MODULE_2__.currentProject.todos.map(
-      (todo, i) => `
-      <tr class='${todo.isComplete ? 'complete' : todo.priority}'>
-      <td>${todo.title}</td>
-      <td>${todo.dueDateFormatted}</td>
-      <td>${todo.priority}</td>
-      <td>
-        <button class='progress' data-index='${i}'>
-          ${
-            todo.isComplete
-              ? "<span class='material-icons'>task_alt</span>"
-              : "<span class='material-icons'>remove_circle_outline</span>"
-          }
-        </button>
-      </td>
-      <td><button class='view' data-index='${i}'><span class="material-icons">zoom_in</span></button></td>
-      <td><button class='delete' data-index='${i}'><span class="material-icons">delete_forever</span></button></td>
-      </tr>`
-      )
-    .join('');
+    todos.innerHTML = _projectsManager__WEBPACK_IMPORTED_MODULE_2__.currentProject.todos.map(
+        (todo, i) => `
+        <tr class='${todo.isComplete ? 'complete' : todo.priority}'>
+        <td>${todo.title}</td>
+        <td>${todo.dueDateFormatted}</td>
+        <td>${todo.priority}</td>
+        <td>
+          <button class='progress' data-index='${i}'>
+            ${
+              todo.isComplete
+                ? "<span class='material-icons'>task_alt</span>"
+                : "<span class='material-icons'>remove_circle_outline</span>"
+            }
+          </button>
+        </td>
+        <td><button class='view' data-index='${i}'><span class="material-icons">zoom_in</span></button></td>
+        <td><button class='delete' data-index='${i}'><span class="material-icons">delete_forever</span></button></td>
+        </tr>`
+        )
+      .join('');
+      project.classList.remove('hidden-project');
+  }, 200);
 }
 
 let sortParam;
@@ -3284,6 +3295,23 @@ function showRandomTodo() {
     <span class="material-icons">bolt</span>
   `;
   (0,_showTodo__WEBPACK_IMPORTED_MODULE_1__.default)((0,_projectsManager__WEBPACK_IMPORTED_MODULE_2__.randomProject)().randomTodo(), tagline);
+}
+
+function pageLoad() {
+  setTimeout(() => {
+    const header = document.querySelector('header');
+    project.classList.remove('page-load-transition');
+    projects.classList.remove('page-load-transition');
+    header.classList.remove('page-load-transition');
+  }, 2000);
+
+  if (!_projectsManager__WEBPACK_IMPORTED_MODULE_2__.currentProject) {
+    // avoids disappear animation causing flash of hidden project
+    project.classList.add('page-load-hidden');
+    setTimeout(() => {
+      project.classList.remove('page-load-hidden');
+    }, 3000);
+  }
 }
 
 
@@ -3653,6 +3681,7 @@ _observer__WEBPACK_IMPORTED_MODULE_0__.on('assignCurrentProject', assignCurrentP
 _observer__WEBPACK_IMPORTED_MODULE_0__.on('updateProject', update);
 
 function assignCurrentProject(index) {
+  if (currentProject === projects[index]) return;
   currentProject = projects[index];
   _observer__WEBPACK_IMPORTED_MODULE_0__.emit('updateProject');
 }
@@ -3986,6 +4015,8 @@ if (storedProjects) {
 
 const index = localStorage.getItem('currentProjectIndex') || 0;
 _observer__WEBPACK_IMPORTED_MODULE_5__.emit('assignCurrentProject', index);
+
+(0,_DOMcontroller__WEBPACK_IMPORTED_MODULE_2__.default)();
 
 })();
 

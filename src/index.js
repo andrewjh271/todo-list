@@ -1,6 +1,6 @@
 import Project from './project';
 import Todo from './todo';
-import './DOMcontroller';
+import pageLoad from './DOMcontroller';
 import './localStorage';
 import * as ProjectsManager from './projectsManager';
 import * as Observer from './observer';
@@ -20,3 +20,5 @@ if (storedProjects) {
 
 const index = localStorage.getItem('currentProjectIndex') || 0;
 Observer.emit('assignCurrentProject', index);
+
+pageLoad();

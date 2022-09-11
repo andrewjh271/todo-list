@@ -4,19 +4,19 @@
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta charset="utf-8">
-    <title>Todo App</title>
     <link rel="icon" href="favicon.ico" />
     <link rel="icon" type="image/x-icon" href="check.svg">
-    <link rel="stylesheet" href="stylesheets/style.css">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Titillium+Web:wght@300;400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="stylesheets/style.css">
+    <title>Todo App</title>
   </head>
 
   <body>
     <div class='container'>
-      <header>
+      <header class='page-load-transition'>
         <button class='toggle-projects'>
           <span class="material-icons hidden">menu</span>
           <span class="material-icons">close</span>
@@ -27,9 +27,8 @@
         </button>
       </header>
   
-      <aside class='projects active'>
+      <aside class='projects active page-load-transition'>
         <div class='banner'>
-
           <h2>Projects</h2>
           <button class='add-project'>
             <span class="material-icons">add</span>
@@ -48,7 +47,7 @@
         </div>
       </form>
   
-      <div class='project hidden-project'>
+      <div class='project hidden-project page-load-transition'>
         <div class='banner'>
           <div>
             <h2 class='project-title'></h2>

@@ -8,6 +8,7 @@ Observer.on('assignCurrentProject', assignCurrentProject);
 Observer.on('updateProject', update);
 
 function assignCurrentProject(index) {
+  if (currentProject === projects[index]) return;
   currentProject = projects[index];
   Observer.emit('updateProject');
 }
