@@ -64,7 +64,7 @@ header {
   padding: 10px;
   color: white;
   background-color: $dark-blue;
-  background-image: linear-gradient(155deg, rgb(77 112 157 / 90%), rgb(94 142 180 / 90%)),
+  background-image: linear-gradient(155deg, #02316de0, #4d87b5e6),
                     url(../background2.jpg);
   background-size: contain;
 
@@ -98,6 +98,7 @@ header {
   background-size: cover;
   background-color: #e6ebff;
 
+  // avoid translateX on .projects directly because white briefly gets shown behind background color
   & > * {
     transform: translateX(-22vw);
     transition: 1.2s;
@@ -300,7 +301,7 @@ label {
   font-size: 16px;
 
   + * {
-    border-left: 1px dashed gray;
+    border-left: 1px dashed gray !important;
   }
 }
 
@@ -361,9 +362,10 @@ table, th, td {
 }
 
 th, td {
-  border: 1px solid #cecece;
+  border: 1px solid #edededba;
   padding: 15px;
   min-width: 20px;
+  text-align: center;
 
   button {
     background-color: #9a969624;
@@ -400,6 +402,10 @@ th:hover {
 
 tr {
   background-color: #f5faff;
+}
+
+td:first-child {
+  text-align: left;
 }
 
 // pop up

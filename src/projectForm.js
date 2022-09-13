@@ -56,7 +56,7 @@ function editProject() {
   buttonContainer.classList.add('form-line');
 
   const exit = document.createElement('button');
-  exit.textContent = 'Exit';
+  exit.textContent = 'Cancel';
   exit.classList.add('text-button');
 
   const submit = document.createElement('input');

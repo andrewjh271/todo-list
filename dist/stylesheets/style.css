@@ -61,7 +61,7 @@ header {
   padding: 10px;
   color: white;
   background-color: #385a8d;
-  background-image: linear-gradient(155deg, rgba(77, 112, 157, 0.9), rgba(94, 142, 180, 0.9)), url(../background2.jpg);
+  background-image: linear-gradient(155deg, #02316de0, #4d87b5e6), url(../background2.jpg);
   background-size: contain;
 }
 header button {
@@ -266,7 +266,7 @@ label {
   font-size: 16px;
 }
 label + * {
-  border-left: 1px dashed gray;
+  border-left: 1px dashed gray !important;
 }
 
 textarea {
@@ -320,9 +320,10 @@ table, th, td {
 }
 
 th, td {
-  border: 1px solid #cecece;
+  border: 1px solid #edededba;
   padding: 15px;
   min-width: 20px;
+  text-align: center;
 }
 th button, td button {
   background-color: #9a969624;
@@ -355,6 +356,10 @@ th:hover {
 
 tr {
   background-color: #f5faff;
+}
+
+td:first-child {
+  text-align: left;
 }
 
 .pop-up {
