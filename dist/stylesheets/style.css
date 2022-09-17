@@ -217,6 +217,10 @@ form h1 {
   font-size: 25px;
 }
 
+.random-todo-mode {
+  pointer-events: all;
+}
+
 .random-todo-mode h1 {
   display: flex;
   justify-content: space-between;
@@ -372,7 +376,7 @@ td:first-child {
   height: 100vh;
   padding: 35vh 25vw 35vh 33vw;
   background-color: rgba(168, 166, 166, 0.432);
-  animation: emerge 0.8s forwards;
+  animation: emerge 0.8s forwards !important;
 }
 .pop-up::after {
   content: "";
