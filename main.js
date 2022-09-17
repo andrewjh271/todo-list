@@ -3179,11 +3179,14 @@ todos.addEventListener('click', deleteTodo);
 randomTodo.addEventListener('click', showRandomTodo);
 
 _observer__WEBPACK_IMPORTED_MODULE_0__.on('updateProjects', updateProjects);
-_observer__WEBPACK_IMPORTED_MODULE_0__.on('updateProject', showProject);
+// Observer.on('updateProject', showProject);
 _observer__WEBPACK_IMPORTED_MODULE_0__.on('updateProject', () => {
   // prevent animated opacity when displaying changes to current project
   project.classList.add('project-no-animation');
+  showProject();
 });
+// reenable animated opacity only if  project has actually changed
+_observer__WEBPACK_IMPORTED_MODULE_0__.on('projectChange', () => project.classList.remove('project-no-animation'));
 
 function toggleSidebar() {
   projects.classList.toggle('active');
@@ -3209,8 +3212,6 @@ function assignCurrentProject(e) {
     // hide project if clicked outside of an element in sidebar
     _observer__WEBPACK_IMPORTED_MODULE_0__.emit('assignCurrentProject');
   }
-  // reenable animated opacity
-  project.classList.remove('project-no-animation');
 }
 
 function showProject() {
@@ -3685,6 +3686,7 @@ function assignCurrentProject(index) {
   if (currentProject === projects[index]) return;
   currentProject = projects[index];
   _observer__WEBPACK_IMPORTED_MODULE_0__.emit('updateProject');
+  _observer__WEBPACK_IMPORTED_MODULE_0__.emit('projectChange');
 }
 
 function add(project) {
