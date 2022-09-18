@@ -3155,8 +3155,7 @@ __webpack_require__.r(__webpack_exports__);
 const projects = document.querySelector('.projects');
 const projectList = document.querySelector('.project-list');
 
-const toggleProjects = document.querySelector('.toggle-projects');
-const toggleIcons = toggleProjects.querySelectorAll('.material-icons');
+const toggleProjects = document.querySelector('.hamburger');
 
 const project = document.querySelector('.project');
 const projectTitle = project.querySelector('.project-title');
@@ -3190,7 +3189,7 @@ _observer__WEBPACK_IMPORTED_MODULE_0__.on('projectChange', () => project.classLi
 
 function toggleSidebar() {
   projects.classList.toggle('active');
-  toggleIcons.forEach((icon) => icon.classList.toggle('hidden'));
+  toggleProjects.classList.toggle('is-active');
 }
 
 function updateProjects(currentProjects) {

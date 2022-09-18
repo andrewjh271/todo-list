@@ -1,5 +1,14 @@
+$hamburger-padding-x           : 15px !default;
+$hamburger-padding-y           : 0 !default;
+$hamburger-layer-width         : 28px !default;
+$hamburger-layer-color         : white !default;
+$hamburger-layer-border-radius : 3px !default;
+$hamburger-hover-opacity       : 1 !default;
+
 $dark-blue: #385a8d;
 $input-border: 1px solid #a4a4a4;
+
+@import '../node_modules/hamburgers/_sass/hamburgers/hamburgers.scss';
 
 *, *:before, *:after {
   box-sizing: inherit;
@@ -56,6 +65,7 @@ header.page-load-transition > *,
   visibility: hidden;
 }
 
+
 header {
   grid-column: 1 / 3;
   display: flex;
@@ -69,18 +79,26 @@ header {
   background-size: contain;
 
   button {
+    height: 36px;
     background: none;
     color: white;
-    transition: 0.3s;
+    transition: transform 0.3s !important;
 
     &:hover {
-      transform: scale(1.2);
+      transform: scale(1.1);
     }
 
     .material-icons {
-      font-size: 32px;
+      font-size: 38px;
     }
+
   }
+  .hamburger {
+    height: auto;
+    position: relative;
+    top: 6px;
+  }
+
 }
 
 // projects sidebar

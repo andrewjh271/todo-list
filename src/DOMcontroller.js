@@ -8,8 +8,7 @@ import './newTodo';
 const projects = document.querySelector('.projects');
 const projectList = document.querySelector('.project-list');
 
-const toggleProjects = document.querySelector('.toggle-projects');
-const toggleIcons = toggleProjects.querySelectorAll('.material-icons');
+const toggleProjects = document.querySelector('.hamburger');
 
 const project = document.querySelector('.project');
 const projectTitle = project.querySelector('.project-title');
@@ -43,7 +42,7 @@ Observer.on('projectChange', () => project.classList.remove('project-no-animatio
 
 function toggleSidebar() {
   projects.classList.toggle('active');
-  toggleIcons.forEach((icon) => icon.classList.toggle('hidden'));
+  toggleProjects.classList.toggle('is-active');
 }
 
 function updateProjects(currentProjects) {
