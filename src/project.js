@@ -24,7 +24,8 @@ export default class Project {
     emit('updateProject');
   }
 
-  sort(sortParam, direction) {
+  sort(sortParam) {
+    const direction = -this.currentDirection(sortParam);
     this.todos.sort((a, b) => (
       a[sortParam] < b[sortParam] ? direction : -direction));
     emit('updateProject');

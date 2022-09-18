@@ -3246,12 +3246,9 @@ function showProject() {
   }, 200);
 }
 
-let sortParam;
-let direction;
 function sortDisplay(e) {
-  sortParam = e.target.dataset.name;
-  direction = -(_projectsManager__WEBPACK_IMPORTED_MODULE_2__.currentProject.currentDirection(sortParam));
-  _projectsManager__WEBPACK_IMPORTED_MODULE_2__.currentProject.sort(sortParam, direction);
+  const sortParam = e.target.dataset.name;
+  _projectsManager__WEBPACK_IMPORTED_MODULE_2__.currentProject.sort(sortParam);
 }
 
 function toggleProgress(e) {
@@ -3516,7 +3513,8 @@ class Project {
     (0,_observer__WEBPACK_IMPORTED_MODULE_0__.emit)('updateProject');
   }
 
-  sort(sortParam, direction) {
+  sort(sortParam) {
+    const direction = -this.currentDirection(sortParam);
     this.todos.sort((a, b) => (
       a[sortParam] < b[sortParam] ? direction : -direction));
     (0,_observer__WEBPACK_IMPORTED_MODULE_0__.emit)('updateProject');

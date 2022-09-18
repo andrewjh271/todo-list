@@ -100,12 +100,9 @@ function showProject() {
   }, 200);
 }
 
-let sortParam;
-let direction;
 function sortDisplay(e) {
-  sortParam = e.target.dataset.name;
-  direction = -(currentProject.currentDirection(sortParam));
-  currentProject.sort(sortParam, direction);
+  const sortParam = e.target.dataset.name;
+  currentProject.sort(sortParam);
 }
 
 function toggleProgress(e) {
