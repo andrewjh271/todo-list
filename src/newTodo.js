@@ -16,7 +16,6 @@ cancelTodo.addEventListener('click', function cancel(e) {
 function toggleTodoForm(e) {
   e.preventDefault();
   formTitle.innerHTML = `New Todo for <i>${currentProject.title}</i>`;
-  newTodoButton.classList.toggle('hidden');
   todoForm.classList.toggle('hidden');
 }
 

@@ -3417,7 +3417,6 @@ cancelTodo.addEventListener('click', function cancel(e) {
 function toggleTodoForm(e) {
   e.preventDefault();
   formTitle.innerHTML = `New Todo for <i>${_projectsManager__WEBPACK_IMPORTED_MODULE_1__.currentProject.title}</i>`;
-  newTodoButton.classList.toggle('hidden');
   todoForm.classList.toggle('hidden');
 }
 
