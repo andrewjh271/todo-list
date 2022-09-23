@@ -47,6 +47,7 @@ function deleteCurrentProject() {
       projects.splice(i, 1);
       currentProject = null;
       Observer.emit('updateProject');
+      Observer.emit('projectChange');
       return;
     }
   }

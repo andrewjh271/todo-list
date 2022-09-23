@@ -3718,6 +3718,7 @@ function deleteCurrentProject() {
       projects.splice(i, 1);
       currentProject = null;
       _observer__WEBPACK_IMPORTED_MODULE_0__.emit('updateProject');
+      _observer__WEBPACK_IMPORTED_MODULE_0__.emit('projectChange');
       return;
     }
   }
