@@ -1,5 +1,5 @@
 import Project from './project';
-import { add, currentProject, deleteCurrentProject } from './projectsManager';
+import { add, getCurrentProject, deleteCurrentProject } from './projectsManager';
 
 const newProjectButton = document.querySelector('.add-project');
 const editProjectButton = document.querySelector('.edit-project-button');
@@ -40,16 +40,16 @@ function editProject() {
   const editProjectForm = document.querySelector('.edit-project-form');
 
   const header = document.createElement('h1');
-  header.innerHTML = `Edit <i>${currentProject.title}</i>`;
+  header.innerHTML = `Edit <i>${getCurrentProject().title}</i>`;
 
   const title = document.createElement('input');
   title.setAttribute('type', 'text');
-  title.value = currentProject.title;
+  title.value = getCurrentProject().title;
   title.classList.add('form-line');
 
   const description = document.createElement('textarea');
   description.placeholder = 'Description...';
-  description.value = currentProject.description;
+  description.value = getCurrentProject().description;
   description.classList.add('form-line');
 
   const buttonContainer = document.createElement('div');
@@ -75,7 +75,7 @@ function editProject() {
 
   editProjectForm.addEventListener('submit', (e) => {
     e.preventDefault();
-    currentProject.update({
+    getCurrentProject().update({
       title: title.value,
       description: description.value,
     });

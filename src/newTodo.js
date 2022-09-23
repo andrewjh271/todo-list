@@ -1,5 +1,5 @@
 import Todo from './todo';
-import { currentProject } from './projectsManager';
+import { getCurrentProject } from './projectsManager';
 
 const newTodoButton = document.querySelector('.new-todo');
 const todoForm = document.querySelector('.new-todo-form');
@@ -15,7 +15,7 @@ cancelTodo.addEventListener('click', function cancel(e) {
 
 function toggleTodoForm(e) {
   e.preventDefault();
-  formTitle.innerHTML = `New Todo for <i>${currentProject.title}</i>`;
+  formTitle.innerHTML = `New Todo for <i>${getCurrentProject().title}</i>`;
   todoForm.classList.toggle('hidden');
 }
 
@@ -28,7 +28,7 @@ function addTodo(e) {
     dueDate: `${this.querySelector('[name=due-date]').value}T00:00:00`,
     priority: this.querySelector('[name=priority]').value,
   });
-  currentProject.addTodo(todo);
+  getCurrentProject().addTodo(todo);
   this.reset();
   toggleTodoForm(e);
 }

@@ -1,4 +1,3 @@
-/* eslint-disable import/no-mutable-exports */
 import * as Observer from './observer';
 
 let projects = [];
@@ -12,6 +11,10 @@ function assignCurrentProject(index) {
   currentProject = projects[index];
   Observer.emit('updateProject');
   Observer.emit('projectChange');
+}
+
+function getCurrentProject() {
+  return currentProject;
 }
 
 function add(project) {
@@ -50,5 +53,5 @@ function deleteCurrentProject() {
 }
 
 export {
-  add, remove, load, randomProject, deleteCurrentProject, currentProject
+  add, remove, load, randomProject, deleteCurrentProject, getCurrentProject
 };

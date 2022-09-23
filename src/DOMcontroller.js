@@ -1,7 +1,7 @@
 /* eslint-disable indent */
 import * as Observer from './observer';
 import showTodo from './showTodo';
-import { currentProject, randomProject } from './projectsManager';
+import { getCurrentProject, randomProject } from './projectsManager';
 import './projectForm';
 import './newTodo';
 
@@ -31,7 +31,6 @@ todos.addEventListener('click', deleteTodo);
 randomTodo.addEventListener('click', showRandomTodo);
 
 Observer.on('updateProjects', updateProjects);
-// Observer.on('updateProject', showProject);
 Observer.on('updateProject', () => {
   // prevent animated opacity when displaying changes to current project
   project.classList.add('project-no-animation');
@@ -48,11 +47,11 @@ function toggleSidebar() {
 function updateProjects(currentProjects) {
   projectList.innerHTML = currentProjects
     .map((projectItem, i) => {
-        if (projectItem === currentProject) {
-          return `<li class='current-project' data-index='${i}'>${projectItem.title}</li>`;
-        }
-        return `<li data-index='${i}'>${projectItem.title}</li>`;
-      })
+      if (projectItem === getCurrentProject()) {
+        return `<li class='current-project' data-index='${i}'>${projectItem.title}</li>`;
+      }
+      return `<li data-index='${i}'>${projectItem.title}</li>`;
+    })
     .join('');
 }
 
@@ -68,14 +67,14 @@ function assignCurrentProject(e) {
 
 function showProject() {
   project.classList.add('hidden-project');
-  if (!currentProject) {
+  if (!getCurrentProject()) {
     return;
   }
   setTimeout(() => {
-    projectTitle.textContent = currentProject.title;
-    projectDescription.textContent = currentProject.description;
+    projectTitle.textContent = getCurrentProject().title;
+    projectDescription.textContent = getCurrentProject().description;
 
-    todos.innerHTML = currentProject.todos
+    todos.innerHTML = getCurrentProject().todos
       .map(
         (todo, i) => `
         <tr class='${todo.isComplete ? 'complete' : todo.priority}'>
@@ -94,29 +93,29 @@ function showProject() {
         <td><button class='view' data-index='${i}'><span class="material-icons">zoom_in</span></button></td>
         <td><button class='delete' data-index='${i}'><span class="material-icons">delete_forever</span></button></td>
         </tr>`
-        )
+      )
       .join('');
-      project.classList.remove('hidden-project');
+    project.classList.remove('hidden-project');
   }, 200);
 }
 
 function sortDisplay(e) {
   const sortParam = e.target.dataset.name;
-  currentProject.sort(sortParam);
+  getCurrentProject().sort(sortParam);
 }
 
 function toggleProgress(e) {
   if (!e.target.matches('.progress')) return;
 
   const { index } = e.target.dataset;
-  currentProject.todos[index].toggleComplete();
+  getCurrentProject().todos[index].toggleComplete();
 }
 
 function viewTodo(e) {
   if (!e.target.matches('.view')) return;
 
   const { index } = e.target.dataset;
-  showTodo(currentProject.todos[index]);
+  showTodo(getCurrentProject().todos[index]);
 }
 
 function deleteTodo(e) {
@@ -127,7 +126,7 @@ function deleteTodo(e) {
   if (!confirmation) return;
 
   const { index } = e.target.dataset;
-  currentProject.removeTodo(index);
+  getCurrentProject().removeTodo(index);
 }
 
 function showRandomTodo() {
@@ -152,7 +151,7 @@ export default function pageLoad() {
     header.classList.remove('page-load-transition');
   }, 2000);
 
-  if (!currentProject) {
+  if (!getCurrentProject()) {
     // avoids disappear animation causing flash of hidden project
     project.classList.add('page-load-hidden');
     setTimeout(() => {
